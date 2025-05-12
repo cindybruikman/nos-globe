@@ -15,11 +15,14 @@ interface CountryFeature {
 interface PuntFeature {
   type: string;
   geometry: {
-    coordinates: [number, number];
+    type: string;
+    coordinates: number[];
   };
   properties: {
     id?: string;
-    fid: string;
+    fid: number;
+    lon?: number;
+    lat?: number;
     prismic: any;
     color: string;
     type: string;
@@ -34,31 +37,50 @@ interface WorldGeoJSON {
 
 interface PuntGeoJSON {
   features: PuntFeature[];
+  type: string;
+  name: string;
+  crs: {
+    type: string;
+    properties: {
+      name: string;
+    }
+  };
 }
 
 interface TheWorldProps {
   width: number;
   height: number;
-  hoveredCountry: string | null;
+  zoomTargetCountry: string | null;
   openModal: (data: {
     prismic: any;
     color: string;
     type: string;
     icon: string;
   }) => void;
+  onVisibleCountriesChange?: (countries: string[]) => void;
 }
 
 export const TheWorld: React.FC<TheWorldProps> = ({
   width,
   height,
   openModal,
-  hoveredCountry,
+  zoomTargetCountry,
+  onVisibleCountriesChange,
 }) => {
   const [allSvgPaths, setAllSvgPaths] = useState<JSX.Element[]>([]);
   const [allPointPaths, setAllPointPaths] = useState<JSX.Element[]>([]);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const globeRef = useRef<SVGCircleElement | null>(null);
   const timerRef = useRef<boolean>(false);
+  // Refs for zooming functionality
+  const prevRotationRef = useRef<[number, number, number]>([0, -15, 0]);
+  const prevScaleRef = useRef<number>(250);
+  const isManualInteractionRef = useRef<boolean>(false);
+  const zoomTransitionRef = useRef<d3.Transition<SVGSVGElement, unknown, null, undefined> | null>(null);
+  const [visibleCountries, setVisibleCountries] = useState<string[]>([]);
+  // State to hold the calculated visible countries before debouncing
+  const [calculatedVisibleCountries, setCalculatedVisibleCountries] = useState<string[]>([]);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const projection = d3
     .geoOrthographic()
@@ -71,18 +93,94 @@ export const TheWorld: React.FC<TheWorldProps> = ({
   const path = d3.geoPath().projection(projection);
   const pointPath = d3.geoPath().projection(projection).pointRadius(10);
 
+  // Calculate centroid of a country by name
+  const getCountryCentroid = (countryName: string): [number, number] | null => {
+    const country = (wereld as WorldGeoJSON).features.find(
+      (c) => c.properties.name === countryName
+    );
+    if (!country) return null;
+    
+    return d3.geoCentroid(country as d3.GeoPermissibleObjects);
+  };
+
+  const updateVisibleCountries = () => {
+    // Get the current projection parameters
+    const currentRotation = projection.rotate();
+    const currentScale = projection.scale();
+    
+    // Calculate the threshold angle based on scale (smaller at higher zoom)
+    const visibilityThreshold = 90 * (initialScale / currentScale);
+    
+    // Determine which countries are visible
+    const visible = (wereld as WorldGeoJSON).features
+      .filter(country => {
+        // Get country centroid
+        const centroid = d3.geoCentroid(country as d3.GeoPermissibleObjects);
+        
+        // Convert centroid to screen coordinates
+        const lambda = centroid[0] + currentRotation[0];
+        const phi = centroid[1] + currentRotation[1];
+        
+        // Calculate angular distance from the center of the view
+        // Using the great circle distance formula
+        const distance = Math.acos(
+          Math.sin(phi * Math.PI / 180) * Math.sin(-currentRotation[1] * Math.PI / 180) +
+          Math.cos(phi * Math.PI / 180) * Math.cos(-currentRotation[1] * Math.PI / 180) *
+          Math.cos((lambda - (-currentRotation[0])) * Math.PI / 180)
+        ) * 180 / Math.PI;
+        
+        // A country is visible if its centroid is less than the threshold angle from view center
+        return distance < visibilityThreshold;
+      })
+      .map(country => country.properties.name);
+    
+    // Update the intermediate state immediately
+    if (JSON.stringify(visible) !== JSON.stringify(calculatedVisibleCountries)) {
+      setCalculatedVisibleCountries(visible);
+    }
+  };
+
+  // Debounce the actual update to the parent component
+  useEffect(() => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      // Only update parent if the debounced value differs from the current parent state
+      // This check might be redundant depending on how Index uses the prop, but can prevent unnecessary updates
+      if (JSON.stringify(calculatedVisibleCountries) !== JSON.stringify(visibleCountries)) {
+        setVisibleCountries(calculatedVisibleCountries);
+        if (onVisibleCountriesChange) {
+          onVisibleCountriesChange(calculatedVisibleCountries);
+        }
+      }
+    }, 300); // 300ms debounce delay
+
+    // Cleanup timer on component unmount or before next effect run
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  // Depend on the calculated state and the callback prop
+  }, [calculatedVisibleCountries, onVisibleCountriesChange, visibleCountries]); 
+
   const calcCountryPaths = () => {
     const paths = (wereld as WorldGeoJSON).features.map((country) => (
       <path
         key={country.id}
         d={path(country) || undefined}
-        fill={country.properties.name === hoveredCountry ? "#ffcc00" : "#949494"}
+        fill={country.properties.name === zoomTargetCountry ? "#ffcc00" : "#949494"}
         stroke="white"
         strokeWidth={0.3}
         className="country-path"
       />
     ));
     setAllSvgPaths(paths);
+    
+    // Update visible countries after recalculating paths
+    updateVisibleCountries();
   };
 
   const calcPointPaths = () => {
@@ -117,12 +215,15 @@ export const TheWorld: React.FC<TheWorldProps> = ({
 
   const setRotationTimer = () => {
     let rotationTimer = d3.timer((elapsed) => {
+      if (timerRef.current) {
+        rotationTimer.stop();
+        return;
+      }
       const rotate = projection.rotate();
       const k = sensitivity / projection.scale();
       projection.rotate([rotate[0] - 1 * k * -1, rotate[1]]);
       calcCountryPaths();
       calcPointPaths();
-      if (timerRef.current) rotationTimer.stop();
     }, 200);
   };
 
@@ -132,35 +233,191 @@ export const TheWorld: React.FC<TheWorldProps> = ({
 
     svg
       .call(
-        d3.drag<SVGSVGElement, unknown>().on("drag", (e) => {
-          timerRef.current = true;
-          const rotate = projection.rotate();
-          const k = sensitivity / projection.scale();
-          projection.rotate([rotate[0] + e.dx * k, rotate[1] - e.dy * k]);
-          calcCountryPaths();
-          calcPointPaths();
-        })
-      )
-      .call(
-        d3.zoom<SVGSVGElement, unknown>().on("zoom", (e) => {
-          if (e.transform.k > 0.3) {
-            projection.scale(initialScale * e.transform.k);
+        d3.drag<SVGSVGElement, unknown>()
+          .on("start", (event) => {
+            timerRef.current = true; // Stop auto-rotation on drag start
+            isManualInteractionRef.current = true;
+            svg.interrupt("zoom"); // Interrupt any ongoing zoom transition
+          })
+          .on("drag", (e) => {
+            const rotate = projection.rotate();
+            const k = sensitivity / projection.scale();
+            projection.rotate([rotate[0] + e.dx * k, rotate[1] - e.dy * k]);
+            prevRotationRef.current = projection.rotate() as [number, number, number]; // Store rotation
             calcCountryPaths();
             calcPointPaths();
-            globe.attr("r", projection.scale());
-          } else {
-            e.transform.k = 0.3;
-          }
-        })
+            // Don't update visible countries on every drag frame for performance
+          })
+          .on("end", (event) => {
+            isManualInteractionRef.current = false;
+            // DO NOT restart rotation here. Let the zoom-out transition handle it.
+            updateVisibleCountries(); // Update (debounced) visible countries once drag ends
+          })
+      )
+      .call(
+        d3.zoom<SVGSVGElement, unknown>()
+          .on("start", (event) => {
+            timerRef.current = true; // Stop auto-rotation on zoom start
+            isManualInteractionRef.current = true;
+            svg.interrupt("zoom"); // Interrupt any ongoing zoom transition
+          })
+          .on("zoom", (e) => {
+            if (e.transform.k > 0.3) {
+              projection.scale(initialScale * e.transform.k);
+              prevScaleRef.current = projection.scale(); // Store scale
+              calcCountryPaths();
+              calcPointPaths();
+              globe.attr("r", projection.scale());
+              // Don't update visible countries on every zoom frame for performance
+            } else {
+              e.transform.k = 0.3; // Prevent zooming out too much
+            }
+          })
+          .on("end", (event) => {
+            isManualInteractionRef.current = false;
+            // DO NOT restart rotation here. Let the zoom-out transition handle it.
+            updateVisibleCountries(); // Update (debounced) visible countries once zoom ends
+          })
       );
   };
 
+  // Handle zoom to country when hovering on news article
+  useEffect(() => {
+    const svg = d3.select(svgRef.current);
+    if (!svg.node()) return;
+
+    svg.interrupt("zoom");
+
+    if (zoomTargetCountry) {
+      const centroid = getCountryCentroid(zoomTargetCountry);
+      if (!centroid) return;
+
+      if (!zoomTransitionRef.current) {
+        prevRotationRef.current = projection.rotate() as [number, number, number];
+        prevScaleRef.current = projection.scale();
+      }
+
+      timerRef.current = true;
+      isManualInteractionRef.current = false;
+
+      const targetRotation: [number, number, number] = [-centroid[0], -centroid[1], 0];
+      const targetScale = initialScale * 2.5;
+
+      const globe = d3.select(globeRef.current);
+
+      const zoomInTransition = svg
+        .transition("zoom")
+        .duration(1000)
+        .ease(d3.easeQuadInOut);
+
+      zoomTransitionRef.current = zoomInTransition;
+
+      let interpolateRotation = d3.interpolate(projection.rotate(), targetRotation);
+      let interpolateScale = d3.interpolateNumber(projection.scale(), targetScale);
+
+      zoomInTransition
+        .tween("rotate", () => {
+          return (t) => {
+            projection.rotate(interpolateRotation(t));
+            projection.scale(interpolateScale(t));
+            globe.attr("r", projection.scale());
+            calcCountryPaths();
+            calcPointPaths();
+            // REMOVED updateVisibleCountries() from here
+          };
+        })
+        .on("end interrupt", () => {
+          zoomTransitionRef.current = null;
+          updateVisibleCountries(); // Update (debounced) visible countries on transition end/interrupt
+          // Don't restart rotation after zooming IN
+        });
+
+    } else {
+      if (prevRotationRef.current && prevScaleRef.current) {
+        timerRef.current = true;
+        isManualInteractionRef.current = false;
+
+        const targetRotation = prevRotationRef.current;
+        const targetScale = prevScaleRef.current;
+
+        const globe = d3.select(globeRef.current);
+
+        const zoomOutTransition = svg
+          .transition("zoom")
+          .duration(1000)
+          .ease(d3.easeQuadInOut);
+
+        zoomTransitionRef.current = zoomOutTransition;
+
+        let interpolateRotation = d3.interpolate(projection.rotate(), targetRotation);
+        let interpolateScale = d3.interpolateNumber(projection.scale(), targetScale);
+
+        zoomOutTransition
+          .tween("rotate", () => {
+            return (t) => {
+              projection.rotate(interpolateRotation(t));
+              projection.scale(interpolateScale(t));
+              globe.attr("r", projection.scale());
+              calcCountryPaths();
+              calcPointPaths();
+              // REMOVED updateVisibleCountries() from here
+            };
+          })
+          .on("end interrupt", () => {
+            zoomTransitionRef.current = null;
+            updateVisibleCountries(); // Update (debounced) visible countries on transition end/interrupt
+            
+            // Only restart rotation if:
+            // 1. No manual interaction happened during the transition.
+            // 2. The globe is back at (or very close to) the initial scale.
+            const isAtInitialScale = Math.abs(projection.scale() - initialScale) < 0.1;
+            if (!isManualInteractionRef.current && isAtInitialScale) {
+              timerRef.current = false;
+              setRotationTimer();
+            }
+          });
+      }
+    }
+  }, [zoomTargetCountry, initialScale, width, height]); // Removed projection
+
+  // Initial setup effect
   useEffect(() => {
     calcPointPaths();
     calcCountryPaths();
     drawGlobe();
     setRotationTimer();
-  }, [height, width, hoveredCountry]);
+    
+    // Use the immediate calculation for the initial render
+    const currentRotation = projection.rotate();
+    const currentScale = projection.scale();
+    const visibilityThreshold = 90 * (initialScale / currentScale);
+
+    const initialVisible = (wereld as WorldGeoJSON).features
+       .filter(country => {
+          // Get country centroid
+          const centroid = d3.geoCentroid(country as d3.GeoPermissibleObjects);
+          
+          // Convert centroid to screen coordinates
+          const lambda = centroid[0] + currentRotation[0];
+          const phi = centroid[1] + currentRotation[1];
+          
+          // Calculate angular distance from the center of the view
+          const distance = Math.acos(
+            Math.sin(phi * Math.PI / 180) * Math.sin(-currentRotation[1] * Math.PI / 180) +
+            Math.cos(phi * Math.PI / 180) * Math.cos(-currentRotation[1] * Math.PI / 180) *
+            Math.cos((lambda - (-currentRotation[0])) * Math.PI / 180)
+          ) * 180 / Math.PI;
+          
+          return distance < visibilityThreshold;
+       })
+       .map(country => country.properties.name);
+       
+    setCalculatedVisibleCountries(initialVisible);
+    setVisibleCountries(initialVisible); // Set the main state directly for initial load
+    if (onVisibleCountriesChange) {
+       onVisibleCountriesChange(initialVisible);
+    }
+  }, [width, height]); // Removed projection
 
   return (
 <svg
@@ -407,7 +664,7 @@ export const TheWorld: React.FC<TheWorldProps> = ({
           </g>
           <g id="Layer_2" data-name="Layer 2">
             <path
-              d="M73.5,50c0-.9-.73-1.62-1.62-1.62h-10.66l8.16-8.16c.59-.62.58-1.64-.04-2.26-.62-.62-1.64-.63-2.28-.02l-10.44,10.44h-4.99v-5l10.5-10.5c.56-.64.54-1.62-.07-2.23-.62-.62-1.65-.63-2.28-.02l-8.15,8.15v-10.66c0-.9-.73-1.62-1.62-1.62s-1.62.73-1.62,1.62v10.66l-8.16-8.16c-.62-.6-1.64-.59-2.27.03-.62.62-.63,1.65-.02,2.28l10.45,10.44v5h-4.99l-10.46-10.46c-.32-.33-.74-.51-1.17-.51h-.01c-.43,0-.85.17-1.15.48-.3.3-.48.73-.47,1.16,0,.43.18.86.5,1.16l8.18,8.18h-10.66c-.9,0-1.62.73-1.62,1.62s.73,1.62,1.62,1.62h10.66l-8.16,8.16c-.33.32-.51.74-.51,1.18,0,.43.17.86.47,1.16.3.3.72.47,1.15.47h.01c.43,0,.85-.18,1.15-.5l10.48-10.48h4.99v5l-10.5,10.5c-.56.64-.54,1.62.07,2.23.63.63,1.65.63,2.29.02l8.15-8.15v10.66c0,.9.73,1.62,1.62,1.62s1.62-.73,1.62-1.62v-10.66l8.16,8.16c.62.6,1.65.6,2.27-.03s.63-1.65.01-2.29l-10.45-10.44v-5h4.99l10.46,10.46c.62.6,1.64.59,2.26-.04s.63-1.65.02-2.28l-8.14-8.14h10.66c.9,0,1.62-.73,1.62-1.62Z"
+              d="M73.5,50c0-.9-.73-1.62-1.62-1.62h-10.66l8.16-8.16c.59-.62.58-1.64-.04-2.26-.62-.62-1.64-.63-2.28-.02l-10.44,10.44h-4.99v-5l10.5-10.5c.56-.64.54-1.62-.07-2.23-.62-.62-1.65-.63-2.28-.02l-8.15,8.15v-10.66c0-.9-.73-1.62-1.62-1.62s-1.62.73-1.62,1.62v10.66l-8.16-8.16c-.62-.6-1.64-.59-2.27.03-.62.62-.63,1.65-.02,2.28l10.45,10.44v5h-4.99l10.46,10.46c.62.6,1.64.59,2.26-.04s.63-1.65.02-2.28l-8.14-8.14h10.66c.9,0,1.62-.73,1.62-1.62Z"
               fill="#fff"
             />
           </g>
@@ -418,7 +675,7 @@ export const TheWorld: React.FC<TheWorldProps> = ({
           </g>
           <g id="Layer_2" data-name="Layer 2">
             <path
-              d="M73.5,50c0-.9-.73-1.62-1.62-1.62h-10.66l8.16-8.16c.59-.62.58-1.64-.04-2.26-.62-.62-1.64-.63-2.28-.02l-10.44,10.44h-4.99v-5l10.5-10.5c.56-.64.54-1.62-.07-2.23-.62-.62-1.65-.63-2.28-.02l-8.15,8.15v-10.66c0-.9-.73-1.62-1.62-1.62s-1.62.73-1.62,1.62v10.66l-8.16-8.16c-.62-.6-1.64-.59-2.27.03-.62.62-.63,1.65-.02,2.28l10.45,10.44v5h-4.99l-10.46-10.46c-.32-.33-.74-.51-1.17-.51h-.01c-.43,0-.85.17-1.15.48-.3.3-.48.73-.47,1.16,0,.43.18.86.5,1.16l8.18,8.18h-10.66c-.9,0-1.62.73-1.62,1.62s.73,1.62,1.62,1.62h10.66l-8.16,8.16c-.33.32-.51.74-.51,1.18,0,.43.17.86.47,1.16.3.3.72.47,1.15.47h.01c.43,0,.85-.18,1.15-.5l10.48-10.48h4.99v5l-10.5,10.5c-.56.64-.54,1.62.07,2.23.63.63,1.65.63,2.29.02l8.15-8.15v10.66c0,.9.73,1.62,1.62,1.62s1.62-.73,1.62-1.62v-10.66l8.16,8.16c.62.6,1.65.6,2.27-.03s.63-1.65.01-2.29l-10.45-10.44v-5h4.99l10.46,10.46c.62.6,1.64.59,2.26-.04s.63-1.65.02-2.28l-8.14-8.14h10.66c.9,0,1.62-.73,1.62-1.62Z"
+              d="M73.5,50c0-.9-.73-1.62-1.62-1.62h-10.66l8.16-8.16c.59-.62.58-1.64-.04-2.26-.62-.62-1.64-.63-2.28-.02l-10.44,10.44h-4.99v-5l10.5-10.5c.56-.64.54-1.62-.07-2.23-.62-.62-1.65-.63-2.28-.02l-8.15,8.15v-10.66c0-.9-.73-1.62-1.62-1.62s-1.62.73-1.62,1.62v10.66l-8.16-8.16c-.62-.6-1.64-.59-2.27.03-.62.62-.63,1.65-.02,2.28l10.45,10.44v5h-4.99l10.46,10.46c.62.6,1.64.59,2.26-.04s.63-1.65.02-2.28l-8.14-8.14h10.66c.9,0,1.62-.73,1.62-1.62Z"
               fill="#fff"
             />
           </g>

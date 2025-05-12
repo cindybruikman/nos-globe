@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   newsStories,
   getStoriesByCategory,
@@ -10,6 +10,7 @@ import SearchBar from "@/components/SearchBar";
 import CategoryFilters from "@/components/CategoryFilters";
 import NewsCard from "@/components/NewsCard";
 import { toast } from "sonner";
+import CategoryPill from "@/components/CategoryPill";
 
 const Index = () => {
   const [stories, setStories] = useState<NewsStory[]>(newsStories);
@@ -17,6 +18,39 @@ const Index = () => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
+  const [visibleCountries, setVisibleCountries] = useState<string[]>([]);
+
+  // Filter stories based on category, search query, and visible countries
+  const filteredStories = useMemo(() => {
+    return stories
+      .filter((story) => {
+        // Apply category filter if active
+        if (activeCategory && story.category !== activeCategory && 
+            !(activeCategory === 'politics' && story.category === 'politiek') && 
+            !(activeCategory === 'technology' && story.category === 'techniek') &&
+            !(activeCategory === 'science' && story.category === 'klimaat')) {
+          return false;
+        }
+        
+        // Apply search filter if query exists
+        if (
+          searchQuery &&
+          !story.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          !story.summary.toLowerCase().includes(searchQuery.toLowerCase())
+        ) {
+          return false;
+        }
+        
+        // Apply visibility filter if we have visible countries
+        if (visibleCountries.length > 0) {
+          // Only show stories with countries visible in the current view
+          return visibleCountries.includes(story.country);
+        }
+        
+        return true;
+      })
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [stories, activeCategory, searchQuery, visibleCountries]);
 
   // Handle category selection
   useEffect(() => {
@@ -61,16 +95,63 @@ const Index = () => {
     setHoveredCountry(null);
   };
 
+  // Handle visible countries change from Globe component
+  const handleVisibleCountriesChange = (countries: string[]) => {
+    setVisibleCountries(countries);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       {/* Header with search and filters */}
       <header className="w-full py-6 px-4">
         <div className="container mx-auto">
-          <SearchBar onSearch={handleSearch} />
-          <CategoryFilters
-            activeCategory={activeCategory}
-            setActiveCategory={setActiveCategory}
-          />
+          <div className="flex flex-col md:flex-row gap-3 mb-4">
+            <input
+              type="text"
+              placeholder="Search news..."
+              className="flex-1 p-2 border rounded-md bg-background"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            
+            {/* Category filters */}
+            <div className="flex gap-2 flex-wrap">
+              <CategoryPill
+                category="all"
+                label="All"
+                isActive={activeCategory === null}
+                onClick={() => setActiveCategory(null)}
+              />
+              <CategoryPill
+                category="politics"
+                label="Politics"
+                isActive={activeCategory === "politics"}
+                onClick={() => setActiveCategory("politics")}
+              />
+              <CategoryPill
+                category="technology"
+                label="Tech"
+                isActive={activeCategory === "technology"}
+                onClick={() => setActiveCategory("technology")}
+              />
+              <CategoryPill
+                category="science"
+                label="Science"
+                isActive={activeCategory === "science"}
+                onClick={() => setActiveCategory("science")}
+              />
+            </div>
+          </div>
+          
+          {/* Visibility filter indicator */}
+          {visibleCountries.length > 0 && (
+            <div className="mb-4 py-2 px-3 bg-blue-50 border border-blue-200 rounded-md flex items-center">
+              <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+              <span className="text-sm text-blue-700">
+                Showing {filteredStories.length} news items from {visibleCountries.length} visible regions
+              </span>
+            </div>
+          )}
         </div>
       </header>
 
@@ -81,7 +162,8 @@ const Index = () => {
           <Globe
             width={800}
             height={800}
-            hoveredCountry={hoveredCountry}
+            zoomTargetCountry={hoveredCountry}
+            onVisibleCountriesChange={handleVisibleCountriesChange}
             openModal={(data) => {
               console.log("Modal data", data);
               // eventueel setSelectedStory(data)
@@ -104,8 +186,8 @@ const Index = () => {
             </h2>
 
             <div className="space-y-4 max-h-[calc(100vh-300px)] overflow-y-auto pr-2">
-              {stories.length > 0 ? (
-                stories.map((story) => (
+              {filteredStories.length > 0 ? (
+                filteredStories.map((story) => (
                   <NewsCard
                     key={story.id}
                     story={story}
