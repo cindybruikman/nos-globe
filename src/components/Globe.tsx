@@ -1,94 +1,183 @@
-
 import { useEffect, useRef, useState } from "react";
-import { Globe as GlobeIcon } from "lucide-react";
-import { NewsStory } from "@/utils/mockData";
+import * as d3 from "d3";
 
-interface GlobeProps {
-  stories: NewsStory[];
-  selectedStory: NewsStory | null;
-  onSelectStory: (story: NewsStory) => void;
+import wereld from "@/assets/data/world.json";
+import punten from "@/assets/data/punten_rapporten.json";
+
+const sensitivity = 50;
+
+// Define TypeScript types
+interface CountryFeature {
+  id: string;
+  [key: string]: any;
 }
 
-const Globe = ({ stories, selectedStory, onSelectStory }: GlobeProps) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    
-    // In a real implementation, we would initialize a WebGL globe here
-    // For this prototype, we'll use a placeholder with a loading state
-    const loadGlobe = async () => {
-      await new Promise(resolve => setTimeout(resolve, 1200)); // Simulate loading
-      setIsLoading(false);
-    };
+interface PuntFeature {
+  type: string;
+  geometry: {
+    coordinates: [number, number];
+  };
+  properties: {
+    id?: string;
+    fid: string;
+    prismic: any;
+    color: string;
+    type: string;
+    icon: string;
+  };
+  [key: string]: any;
+}
 
-    loadGlobe();
+interface WorldGeoJSON {
+  features: CountryFeature[];
+}
 
-    // Cleanup function for a real implementation
-    return () => {
-      // Clean up WebGL context if needed
-    };
-  }, []);
+interface PuntGeoJSON {
+  features: PuntFeature[];
+}
 
-  // Helper function to get highlight color for a story
-  const getHighlightColor = (story: NewsStory) => {
-    switch (story.category) {
-      case "politiek": return "#e57373"; // red
-      case "klimaat": return "#81c784"; // green
-      case "economie": return "#64b5f6"; // blue
-      case "cultuur": return "#ffd54f"; // yellow
-      case "techniek": return "#a1887f"; // brown
-      default: return "#e0e0e0"; // grey
-    }
+interface TheWorldProps {
+  width: number;
+  height: number;
+  openModal: (data: {
+    prismic: any;
+    color: string;
+    type: string;
+    icon: string;
+  }) => void;
+}
+
+export const TheWorld: React.FC<TheWorldProps> = ({
+  width,
+  height,
+  openModal,
+}) => {
+  const [allSvgPaths, setAllSvgPaths] = useState<JSX.Element[]>([]);
+  const [allPointPaths, setAllPointPaths] = useState<JSX.Element[]>([]);
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const globeRef = useRef<SVGCircleElement | null>(null);
+  const timerRef = useRef<boolean>(false);
+
+  const projection = d3
+    .geoOrthographic()
+    .scale(250)
+    .center([0, 0])
+    .rotate([0, -15])
+    .translate([width / 2, height / 2]);
+
+  const initialScale = projection.scale();
+  const path = d3.geoPath().projection(projection);
+  const pointPath = d3.geoPath().projection(projection).pointRadius(10);
+
+  const calcCountryPaths = () => {
+    const paths = (wereld as WorldGeoJSON).features.map((country) => (
+      <path
+        key={country.id}
+        d={path(country) || undefined}
+        fill="#949494"
+        stroke="white"
+        strokeWidth={0.3}
+      />
+    ));
+    setAllSvgPaths(paths);
   };
 
+  const calcPointPaths = () => {
+    const points = (punten as PuntGeoJSON).features.map((punt) => {
+      const coords = projection(punt.geometry.coordinates);
+      if (coords && pointPath(punt) !== null) {
+        return (
+          <use
+            tabIndex={0}
+            aria-label={punt.properties.type}
+            key={punt.properties.fid}
+            className="cursor-pointer"
+            xlinkHref={`#${punt.properties.icon}`}
+            x={coords[0] * 3}
+            y={coords[1] * 3}
+            transform="scale(0.33)"
+            onClick={() =>
+              openModal({
+                prismic: punt.properties.prismic,
+                color: punt.properties.color,
+                type: punt.properties.type,
+                icon: punt.properties.icon,
+              })
+            }
+          />
+        );
+      }
+      return null;
+    });
+    setAllPointPaths(points.filter((p): p is JSX.Element => p !== null));
+  };
+
+  const setRotationTimer = () => {
+    let rotationTimer = d3.timer((elapsed) => {
+      const rotate = projection.rotate();
+      const k = sensitivity / projection.scale();
+      projection.rotate([rotate[0] - 1 * k * -1, rotate[1]]);
+      calcCountryPaths();
+      calcPointPaths();
+      if (timerRef.current) rotationTimer.stop();
+    }, 200);
+  };
+
+  const drawGlobe = () => {
+    const svg = d3.select(svgRef.current);
+    const globe = d3.select(globeRef.current);
+
+    svg
+      .call(
+        d3.drag<SVGSVGElement, unknown>().on("drag", (e) => {
+          timerRef.current = true;
+          const rotate = projection.rotate();
+          const k = sensitivity / projection.scale();
+          projection.rotate([rotate[0] + e.dx * k, rotate[1] - e.dy * k]);
+          calcCountryPaths();
+          calcPointPaths();
+        })
+      )
+      .call(
+        d3.zoom<SVGSVGElement, unknown>().on("zoom", (e) => {
+          if (e.transform.k > 0.3) {
+            projection.scale(initialScale * e.transform.k);
+            calcCountryPaths();
+            calcPointPaths();
+            globe.attr("r", projection.scale());
+          } else {
+            e.transform.k = 0.3;
+          }
+        })
+      );
+  };
+
+  useEffect(() => {
+    calcPointPaths();
+    calcCountryPaths();
+    drawGlobe();
+    setRotationTimer();
+  }, [height, width]);
+
   return (
-    <div className="relative w-full h-full">
-      {/* Placeholder for the globe */}
-      <div className="globe-container">
-        {isLoading ? (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
-          </div>
-        ) : (
-          <>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <img 
-                src="/lovable-uploads/39dc61fa-6a73-42e8-acc0-40b632fae0e0.png" 
-                alt="Interactive Globe"
-                className="object-contain max-w-full max-h-full"
-              />
-            </div>
-            <div className="globe-glow"></div>
-            
-            {/* This would be replaced by actual WebGL markers in a real implementation */}
-            {stories.map((story) => (
-              <div
-                key={story.id}
-                style={{
-                  position: 'absolute',
-                  // These coordinates would be calculated from 3D to 2D projection in real implementation
-                  left: `${50 + story.coordinates[0] * 0.25}%`,
-                  top: `${50 - story.coordinates[1] * 0.25}%`,
-                  transform: 'translate(-50%, -50%)',
-                  width: selectedStory?.id === story.id ? '15px' : '10px',
-                  height: selectedStory?.id === story.id ? '15px' : '10px',
-                  borderRadius: '50%',
-                  backgroundColor: getHighlightColor(story),
-                  boxShadow: selectedStory?.id === story.id ? '0 0 10px white' : 'none',
-                  zIndex: selectedStory?.id === story.id ? 10 : 5,
-                  transition: 'all 0.3s ease',
-                  cursor: 'pointer'
-                }}
-                onClick={() => onSelectStory(story)}
-              />
-            ))}
-          </>
-        )}
-      </div>
-    </div>
+    <svg
+      ref={svgRef}
+      width={width}
+      height={height}
+      aria-label="afbeelding van de wereld"
+    >
+      <circle
+        id="globe"
+        ref={globeRef}
+        fill="#e6e6e6"
+        stroke="#1E1E1E"
+        strokeWidth={0.2}
+        cx={width / 2}
+        cy={height / 2}
+        r={initialScale}
+      ></circle>
+      <g className="countries">{allSvgPaths}</g>
+      <g>{allPointPaths}</g>
+    </svg>
   );
 };
-
-export default Globe;
