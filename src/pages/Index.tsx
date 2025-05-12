@@ -16,6 +16,7 @@ const Index = () => {
   const [selectedStory, setSelectedStory] = useState<NewsStory | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
 
   // Handle category selection
   useEffect(() => {
@@ -50,6 +51,16 @@ const Index = () => {
     // In a real app, this would animate the globe to center on the story's location
   };
 
+  // Handle mouse enter on a story card
+  const handleStoryMouseEnter = (story: NewsStory) => {
+    setHoveredCountry(story.country);
+  };
+
+  // Handle mouse leave from a story card
+  const handleStoryMouseLeave = () => {
+    setHoveredCountry(null);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       {/* Header with search and filters */}
@@ -70,6 +81,7 @@ const Index = () => {
           <Globe
             width={800}
             height={800}
+            hoveredCountry={hoveredCountry}
             openModal={(data) => {
               console.log("Modal data", data);
               // eventueel setSelectedStory(data)
@@ -98,6 +110,8 @@ const Index = () => {
                     key={story.id}
                     story={story}
                     onClick={handleStorySelect}
+                    onMouseEnter={() => handleStoryMouseEnter(story)}
+                    onMouseLeave={handleStoryMouseLeave}
                   />
                 ))
               ) : (

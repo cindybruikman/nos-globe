@@ -39,6 +39,7 @@ interface PuntGeoJSON {
 interface TheWorldProps {
   width: number;
   height: number;
+  hoveredCountry: string | null;
   openModal: (data: {
     prismic: any;
     color: string;
@@ -51,6 +52,7 @@ export const TheWorld: React.FC<TheWorldProps> = ({
   width,
   height,
   openModal,
+  hoveredCountry,
 }) => {
   const [allSvgPaths, setAllSvgPaths] = useState<JSX.Element[]>([]);
   const [allPointPaths, setAllPointPaths] = useState<JSX.Element[]>([]);
@@ -74,9 +76,10 @@ export const TheWorld: React.FC<TheWorldProps> = ({
       <path
         key={country.id}
         d={path(country) || undefined}
-        fill="#949494"
+        fill={country.properties.name === hoveredCountry ? "#ffcc00" : "#949494"}
         stroke="white"
         strokeWidth={0.3}
+        className="country-path"
       />
     ));
     setAllSvgPaths(paths);
@@ -157,7 +160,7 @@ export const TheWorld: React.FC<TheWorldProps> = ({
     calcCountryPaths();
     drawGlobe();
     setRotationTimer();
-  }, [height, width]);
+  }, [height, width, hoveredCountry]);
 
   return (
 <svg

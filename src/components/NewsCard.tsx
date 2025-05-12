@@ -1,12 +1,13 @@
-
 import { NewsStory } from "@/utils/mockData";
 
 interface NewsCardProps {
   story: NewsStory;
   onClick: (story: NewsStory) => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 }
 
-const NewsCard = ({ story, onClick }: NewsCardProps) => {
+const NewsCard = ({ story, onClick, onMouseEnter, onMouseLeave }: NewsCardProps) => {
   const getCategoryClass = (category: string) => {
     switch (category) {
       case "politiek":
@@ -28,6 +29,8 @@ const NewsCard = ({ story, onClick }: NewsCardProps) => {
     <div 
       className="news-card bg-card rounded-lg overflow-hidden shadow-md cursor-pointer animate-fade-in"
       onClick={() => onClick(story)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <div className="flex items-center p-2">
         <div className="w-20 h-20 mr-3 rounded overflow-hidden flex-shrink-0">
