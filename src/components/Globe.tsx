@@ -1,6 +1,6 @@
 
 import { useEffect, useRef, useState } from "react";
-import { globe } from "lucide-react";
+import { Globe as GlobeIcon } from "lucide-react";
 import { NewsStory } from "@/utils/mockData";
 
 interface GlobeProps {
