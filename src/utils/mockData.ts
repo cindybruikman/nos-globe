@@ -264,17 +264,6 @@ export const newsStories: NewsStory[] = [
     date: "2023-05-04",
   },
   {
-    id: "10",
-    title: "Nederland kondigt nieuwe windparken op Noordzee aan",
-    category: "klimaat",
-    locations: [{ country: "Netherlands", coordinates: [4.9, 52.37] }],
-    region: "Europe",
-    imageUrl: "/placeholder.svg",
-    summary:
-      "De Nederlandse regering investeert in meerdere nieuwe windparken op de Noordzee om de energietransitie te versnellen.",
-    date: "2023-05-03",
-  },
-  {
     id: "11",
     title:
       "Historische vredesdeal bereikt tussen Colombiaanse regering en rebellen",
@@ -453,6 +442,141 @@ export const newsStories: NewsStory[] = [
       "Zwitserland houdt een nationaal referendum over de regulering van kunstmatige intelligentie, waarbij privacy en transparantie centraal staan.",
     date: "2023-04-09",
   },
+  {
+    id: "150",
+    title: "NAVO vergadert over uitbreiding defensie in Baltische staten",
+    category: "politiek",
+    locations: [
+      { country: "Estonia", coordinates: [25.0136, 58.5953] },
+      { country: "Latvia", coordinates: [24.6032, 56.8796] },
+      { country: "Lithuania", coordinates: [23.8813, 55.1694] }
+    ],
+    region: "Europe",
+    imageUrl: "/placeholder.svg",
+    summary: "De NAVO overweegt extra troepen te stationeren in de Baltische staten vanwege toenemende dreiging vanuit Rusland.",
+    date: "2023-05-10"
+  },
+  {
+    id: "151",
+    title: "China en India houden gezamenlijke grenspatrouilles",
+    category: "politiek",
+    locations: [
+      { country: "China", coordinates: [104.1954, 35.8617] },
+      { country: "India", coordinates: [78.9629, 20.5937] }
+    ],
+    region: "Asia",
+    imageUrl: "/placeholder.svg",
+    summary: "Voor het eerst in jaren werken China en India samen aan patrouilles in het omstreden grensgebied in de Himalaya.",
+    date: "2023-05-10"
+  },
+  {
+    id: "152",
+    title: "Topoverleg tussen Frankrijk, Duitsland en Oekraïne over wapenleveranties",
+    category: "politiek",
+    locations: [
+      { country: "France", coordinates: [2.2137, 46.2276] },
+      { country: "Germany", coordinates: [10.4515, 51.1657] },
+      { country: "Ukraine", coordinates: [31.1656, 48.3794] }
+    ],
+    region: "Europe",
+    imageUrl: "/placeholder.svg",
+    summary: "Leiders van Frankrijk, Duitsland en Oekraïne spreken over versnelde levering van luchtafweersystemen en tanks.",
+    date: "2023-05-10"
+  },
+  {
+    id: "153",
+    title: "VS en Japan hernieuwen defensieakkoord in de Stille Oceaan",
+    category: "politiek",
+    locations: [
+      { country: "United States", coordinates: [-95.7129, 37.0902] },
+      { country: "Japan", coordinates: [138.2529, 36.2048] }
+    ],
+    region: "Asia-Pacific",
+    imageUrl: "/placeholder.svg",
+    summary: "De Verenigde Staten en Japan hebben hun militaire samenwerking versterkt te midden van de spanningen rond Taiwan.",
+    date: "2023-05-10"
+  },
+  {
+    id: "154",
+    title: "G7 bespreekt sancties tegen Iran en Venezuela",
+    category: "politiek",
+    locations: [
+      { country: "Iran", coordinates: [53.6880, 32.4279] },
+      { country: "Venezuela", coordinates: [-66.5897, 6.4238] },
+      { country: "Canada", coordinates: [-106.3468, 56.1304] }
+    ],
+    region: "Global",
+    imageUrl: "/placeholder.svg",
+    summary: "Tijdens de G7-top wordt gesproken over nieuwe economische sancties tegen Iran en Venezuela vanwege mensenrechtenschendingen.",
+    date: "2023-05-10"
+  },
+  {
+    id: "155",
+    title: "Turkije blokkeert Zweeds NAVO-lidmaatschap opnieuw",
+    category: "politiek",
+    locations: [
+      { country: "Turkey", coordinates: [35.2433, 38.9637] },
+      { country: "Sweden", coordinates: [18.6435, 60.1282] }
+    ],
+    region: "Europe",
+    imageUrl: "/placeholder.svg",
+    summary: "De Turkse regering stelt dat Zweden nog niet genoeg stappen heeft gezet tegen Koerdische groeperingen.",
+    date: "2023-05-10"
+  },
+  {
+    id: "156",
+    title: "Italië en Griekenland onder druk door toegenomen migratiestromen",
+    category: "politiek",
+    locations: [
+      { country: "Italy", coordinates: [12.5674, 41.8719] },
+      { country: "Greece", coordinates: [21.8243, 39.0742] },
+      { country: "Libya", coordinates: [17.2283, 26.3351] }
+    ],
+    region: "Mediterranean",
+    imageUrl: "/placeholder.svg",
+    summary: "Nieuwe bootvluchtelingen uit Noord-Afrika zetten de opvangcapaciteit van Zuid-Europa opnieuw onder druk.",
+    date: "2023-05-10"
+  },
+  {
+    id: "157",
+    title: "Spanning stijgt tussen Servië en Kosovo",
+    category: "politiek",
+    locations: [
+      { country: "Serbia", coordinates: [21.0059, 44.0165] },
+      { country: "Kosovo", coordinates: [20.9020, 42.6026] }
+    ],
+    region: "Europe",
+    imageUrl: "/placeholder.svg",
+    summary: "Nieuwe confrontaties tussen Servische en Kosovaarse troepen zorgen voor zorgen bij de EU over regionale stabiliteit.",
+    date: "2023-05-10"
+  },
+  {
+    id: "158",
+    title: "Noorwegen en Finland investeren samen in Arctische infrastructuur",
+    category: "politiek",
+    locations: [
+      { country: "Norway", coordinates: [8.4689, 60.4720] },
+      { country: "Finland", coordinates: [25.7482, 61.9241] }
+    ],
+    region: "Arctic",
+    imageUrl: "/placeholder.svg",
+    summary: "Beide landen werken aan een nieuwe spoorlijn en energieverbinding in het hoge noorden om strategisch voordeel te vergroten.",
+    date: "2023-05-10"
+  },
+  {
+    id: "159",
+    title: "Diplomatie tussen Israël en Saoedi-Arabië krijgt nieuwe impuls",
+    category: "politiek",
+    locations: [
+      { country: "Israel", coordinates: [34.8516, 31.0461] },
+      { country: "Saudi Arabia", coordinates: [45.0792, 23.8859] },
+      { country: "United States", coordinates: [-95.7129, 37.0902] }
+    ],
+    region: "Middle East",
+    imageUrl: "/placeholder.svg",
+    summary: "Na geheime gesprekken in Washington lijkt een historische diplomatieke doorbraak tussen Israël en Saoedi-Arabië nabij.",
+    date: "2023-05-10"
+  }
 ];
 
 export const categories = [
