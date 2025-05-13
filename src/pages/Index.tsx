@@ -104,7 +104,7 @@ const Index = () => {
 
   return (
     <div className="w-screen h-screen flex flex-col bg-background text-foreground overflow-hidden">
-      <header className="w-full py-6 px-4 flex-shrink-0">
+      <header className="w-full py-6 px-4 flex-shrink-0 border-b-[0.0625rem] border-[rgb(102,102,102)]">
         <div className="container mx-auto">
           <div className="flex items-center justify-between gap-4 mb-4">
             <NOSLogo />
