@@ -235,7 +235,7 @@ export const newsStories: NewsStory[] = [
     category: "klimaat",
     locations: [{ country: "India", coordinates: [77.21, 28.61] }],
     region: "Asia",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/03/10/1200849/1920x1080a.jpg",
     summary:
       "India investeert miljarden in een nieuw zonne- en windenergieproject in de Tharwoestijn, met als doel de uitstoot drastisch te verlagen.",
     date: "2023-04-20",
@@ -246,7 +246,7 @@ export const newsStories: NewsStory[] = [
     category: "economie",
     locations: [{ country: "Argentina", coordinates: [-58.42, -34.61] }],
     region: "South America",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/02/05/1188115/1920x1080a.jpg",
     summary:
       "Ondanks financiële steun van het IMF blijft het economische herstel in Argentinië onzeker, met hoge inflatie en beperkte koopkracht.",
     date: "2023-04-19",
@@ -258,7 +258,7 @@ export const newsStories: NewsStory[] = [
     category: "cultuur",
     locations: [{ country: "South Korea", coordinates: [126.98, 37.56] }],
     region: "Asia",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/08/1211841/1920x1080a.jpg",
     summary:
       "Duizenden Zuid-Koreaanse jongeren gingen de straat op in Seoul om te protesteren tegen de hoge werkdruk en prestatiedruk binnen het onderwijs.",
     date: "2023-05-04",
@@ -270,7 +270,7 @@ export const newsStories: NewsStory[] = [
     category: "politiek",
     locations: [{ country: "Colombia", coordinates: [-74.07, 4.61] }],
     region: "South America",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/16/1214956/1920x1080a.jpg",
     summary:
       "Na jaren van conflict hebben de Colombiaanse regering en rebellen een historische vredesovereenkomst getekend in Bogotá.",
     date: "2023-05-02",
