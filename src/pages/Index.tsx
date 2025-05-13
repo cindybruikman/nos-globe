@@ -193,10 +193,14 @@ const Index = () => {
               ? selectedStory.locations.map((loc) => loc.country).join(", ")
               : "Locatie onbekend"}
           </p>
-          <p className="text-sm line-clamp-4">{selectedStory.summary}</p>
-          <div className="text-xs text-primary mt-2">
-            Klik om het volledige artikel te openen
-          </div>
+          <p className="text-sm line-clamp-4">
+            {selectedStory.summary 
+              ? selectedStory.summary 
+              : selectedStory.fullText 
+                ? `${selectedStory.fullText.substring(0, 150)}...` 
+                : 'Geen beschrijving beschikbaar.'}
+          </p>
+          <div className="text-xs text-primary mt-2">Klik om het volledige artikel te openen</div>
         </div>
       )}
     </div>
