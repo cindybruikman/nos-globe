@@ -281,7 +281,7 @@ export const newsStories: NewsStory[] = [
     category: "klimaat",
     locations: [{ country: "Australia", coordinates: [149.13, -35.28] }],
     region: "Oceania",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/03/23/1206443/1920x1080a.jpg",
     summary:
       "Een toenemende droogte in Australië leidt tot zorgen binnen de landbouwsector over oogstverliezen en voedselvoorziening.",
     date: "2023-05-01",
@@ -292,7 +292,7 @@ export const newsStories: NewsStory[] = [
     category: "economie",
     locations: [{ country: "Morocco", coordinates: [-6.84, 34.02] }],
     region: "Africa",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/03/17/1204207/1920x1080a.jpg",
     summary:
       "De toeristische sector in Marokko laat een sterk herstel zien na de pandemie, met een recordaantal internationale bezoekers.",
     date: "2023-04-30",
