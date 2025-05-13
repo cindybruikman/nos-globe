@@ -29,7 +29,7 @@ interface TheWorldProps {
   }) => void;
   stories: NewsStory[];
   focusedCoordinates: [number, number] | null;
-  highlightedCountryId: string | null;
+  highlightedCountryIds: string[] | null;
   onVisibleStoriesChange: (visibleIds: string[]) => void;
   renderableStoryIds?: string[];
 }
@@ -40,7 +40,7 @@ export const TheWorld: React.FC<TheWorldProps> = ({
   openModal,
   stories,
   focusedCoordinates,
-  highlightedCountryId,
+  highlightedCountryIds,
   onVisibleStoriesChange,
   renderableStoryIds,
 }) => {
@@ -56,9 +56,9 @@ export const TheWorld: React.FC<TheWorldProps> = ({
   const openModalRef = useRef(openModal);
   useEffect(() => { openModalRef.current = openModal; }, [openModal]);
   
-  const highlightedCountryIdRef = useRef(highlightedCountryId);
-  useEffect(() => { highlightedCountryIdRef.current = highlightedCountryId; }, [highlightedCountryId]);
+  const highlightedCountryIdsRef = useRef(highlightedCountryIds);
 
+  // Define projection and path first as calcCountryPaths depends on them
   const projection = useRef(
     d3.geoOrthographic()
       .scale(250)
@@ -67,8 +67,42 @@ export const TheWorld: React.FC<TheWorldProps> = ({
       .translate([width / 2, height / 2])
   ).current;
 
-  const initialScale = useRef(projection.scale()).current;
-  const path = useRef(d3.geoPath().projection(projection)).current;
+  const initialScale = useRef(projection.scale()).current; // Depends on projection
+  const path = useRef(d3.geoPath().projection(projection)).current; // Depends on projection
+
+  const calcCountryPaths = useCallback(() => {
+    const currentHighlightedCountryIds = highlightedCountryIdsRef.current;
+    const paths = (wereld as WorldGeoJSON).features.map((countryFeature) => {
+      let fillColor = "#949494"; // Default color
+      
+      const countryNameFromGeoJSON = countryFeature.properties.name;
+      const featureIso = getCountryISO(countryNameFromGeoJSON);
+
+      if (currentHighlightedCountryIds && featureIso && currentHighlightedCountryIds.includes(featureIso)) {
+        fillColor = getCountryColor(featureIso);
+      }
+
+      return (
+        <path
+          key={countryFeature.id || countryNameFromGeoJSON}
+          d={path(countryFeature) || undefined}
+          fill={fillColor}
+          stroke="white"
+          strokeWidth={0.3}
+        />
+      );
+    });
+    setAllSvgPaths(paths);
+  }, [path, getCountryISO, getCountryColor]); // path is a dependency
+
+  useEffect(() => {
+    highlightedCountryIdsRef.current = highlightedCountryIds;
+    // path check is good, as calcCountryPaths depends on it.
+    // If path isn't ready, calcCountryPaths shouldn't run.
+    if (path) { 
+        calcCountryPaths();
+    }
+  }, [highlightedCountryIds, calcCountryPaths, path]);
 
   const resolveCategoryIcon = useCallback((category: string) => {
     switch (category) {
@@ -147,24 +181,6 @@ export const TheWorld: React.FC<TheWorldProps> = ({
     }
     setAllPointPaths(elements);
   }, [renderableStoryIds, storiesRef.current, width, height, projection, resolveCategoryIcon, openModalRef, mapInteractionCounter, getCountryISO, getCountryColor]);
-
-  const calcCountryPaths = useCallback(() => {
-    const currentHighlightedCountryId = highlightedCountryIdRef.current;
-    const paths = (wereld as WorldGeoJSON).features.map((country) => (
-      <path
-        key={country.id}
-        d={path(country) || undefined}
-        fill={ 
-          currentHighlightedCountryId === country.id 
-            ? getCountryColor(currentHighlightedCountryId)
-            : "#949494" 
-        }
-        stroke="white"
-        strokeWidth={0.3}
-      />
-    ));
-    setAllSvgPaths(paths);
-  }, [path, highlightedCountryIdRef]);
 
   const setRotationTimer = () => {
     let rotationTimer = d3.timer(() => {
