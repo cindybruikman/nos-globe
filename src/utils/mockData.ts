@@ -146,7 +146,7 @@ export const newsStories: NewsStory[] = [
     category: "politiek",
     locations: [{ country: "Senegal", coordinates: [-17.44, 14.69] }],
     region: "Africa",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2024/11/18/1158961/1920x1080a.jpg",
     summary:
       "In een historische verkiezing is de eerste vrouwelijke president van Senegal verkozen, wat wereldwijd wordt geprezen als een doorbraak in gendergelijkheid.",
     date: "2023-04-26",
@@ -157,7 +157,7 @@ export const newsStories: NewsStory[] = [
     category: "klimaat",
     locations: [{ country: "Australia", coordinates: [145.0, -18.0] }],
     region: "Oceania",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2023/04/08/959046/1920x1080a.jpg",
     summary:
       "De Australische overheid kondigt een groot investeringspakket aan voor het herstel van het Great Barrier Reef.",
     date: "2023-06-02",
@@ -168,7 +168,7 @@ export const newsStories: NewsStory[] = [
     category: "economie",
     locations: [{ country: "Germany", coordinates: [13.4, 52.52] }],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/30/1220231/1920x1080a.jpg",
     summary:
       "De verkoop van elektrische auto's is wereldwijd met 30% gestegen, met Duitsland als een van de grootste markten.",
     date: "2023-04-25",
@@ -179,7 +179,7 @@ export const newsStories: NewsStory[] = [
     category: "klimaat",
     locations: [{ country: "Iran", coordinates: [51.38, 35.68] }],
     region: "Middle East",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/24/1217799/1920x1080a.jpg",
     summary:
       "Een aardbeving met een kracht van 6.1 op de schaal van Richter heeft het noorden van Iran getroffen, met schade aan infrastructuur en honderden gewonden.",
     date: "2023-04-24",
@@ -190,7 +190,7 @@ export const newsStories: NewsStory[] = [
     category: "tech",
     locations: [{ country: "Sweden", coordinates: [18.06, 59.33] }],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/05/04/1221506/1920x1080a.jpg",
     summary:
       "Onder leiding van Zweedse onderzoekers is een wereldwijd onderzoek gestart naar de ethische implicaties van gezichtsherkenningstechnologie.",
     date: "2023-04-23",
@@ -201,7 +201,7 @@ export const newsStories: NewsStory[] = [
     category: "klimaat",
     locations: [{ country: "DR Congo", coordinates: [23.5, -2.0] }],
     region: "Africa",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/03/24/1206627/1920x1080a.jpg",
     summary:
       "De Democratische Republiek Congo lanceert een nieuwe campagne om de ontbossing in het Congobekken tegen te gaan.",
     date: "2023-06-03",
@@ -212,7 +212,7 @@ export const newsStories: NewsStory[] = [
     category: "cultuur",
     locations: [{ country: "Egypt", coordinates: [31.23, 30.04] }],
     region: "Africa",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2024/03/04/1059454/1920x1080a.jpg",
     summary:
       "In Cairo is een moderne culturele hub geopend die kunst, muziek en educatie samenbrengt, met als doel jongeren aan te moedigen hun creativiteit te ontwikkelen.",
     date: "2023-04-22",
@@ -224,7 +224,7 @@ export const newsStories: NewsStory[] = [
     category: "tech",
     locations: [{ country: "Norway", coordinates: [10.75, 59.91] }],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/03/20/1205169/1920x1080a.jpg",
     summary:
       "Een onderzoeksteam in Noorwegen heeft een potentieel medicijn ontwikkeld voor een zeldzame genetische zenuwziekte, dat nu klinisch getest wordt.",
     date: "2023-04-21",
