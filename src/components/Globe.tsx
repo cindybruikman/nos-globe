@@ -61,7 +61,7 @@ export const TheWorld: React.FC<TheWorldProps> = ({
   // Define projection and path first as calcCountryPaths depends on them
   const projection = useRef(
     d3.geoOrthographic()
-      .scale(250)
+      .scale(330)
       .center([0, 0])
       .rotate([0, -15])
       .translate([width / 2, height / 2])
@@ -264,6 +264,8 @@ export const TheWorld: React.FC<TheWorldProps> = ({
       ref={svgRef}
       width={width}
       height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      preserveAspectRatio="xMidYMid meet"
       aria-label="afbeelding van de wereld"
     >
       <defs>
