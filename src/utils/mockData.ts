@@ -32,7 +32,7 @@ export const newsStories: NewsStory[] = [
     category: "politiek",
     locations: [{ country: "Vatican", coordinates: [12.45, 41.9] }],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/21/1216656/1920x1080a.jpg",
     summary:
       "Paus Franciscus heeft opgeroepen tot de vrijlating van journalisten wereldwijd tijdens zijn eerste persontmoeting als nieuwe paus.",
     fullText:
@@ -45,7 +45,7 @@ export const newsStories: NewsStory[] = [
     category: "politiek",
     locations: [{ country: "Palestine", coordinates: [34.3, 31.4] }],
     region: "Middle East",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/05/03/1220906/1920x1080a.jpg",
     summary:
       "De Verenigde Naties waarschuwen dat de gehele bevolking van Gaza hongersnood riskeert door aanhoudende conflicten en blokkades.",
     fullText:
@@ -61,7 +61,7 @@ export const newsStories: NewsStory[] = [
       { country: "Russia", coordinates: [37.61, 55.75] }, // Moscow coordinates
     ],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/05/11/1223938/1920x1080a.jpg",
     summary:
       "Polen en Rusland beschuldigen elkaar wederzijds van provocaties aan de grens, wat leidt tot verhoogde militaire paraatheid.",
     date: "2023-05-09",
@@ -73,7 +73,7 @@ export const newsStories: NewsStory[] = [
     category: "tech",
     locations: [{ country: "Burkina Faso", coordinates: [-1.56, 12.36] }],
     region: "Africa",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/05/12/1224422/1920x1080a.jpg",
     summary:
       "De leider van Burkina Faso is viral gegaan op sociale media dankzij AI-gegenereerde content die zijn charisma benadrukt.",
     date: "2023-05-08",
@@ -85,7 +85,7 @@ export const newsStories: NewsStory[] = [
     category: "klimaat",
     locations: [{ country: "Antarctica", coordinates: [0, -80] }],
     region: "Antarctica",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/03/05/1198609/1920x1080a.jpg",
     summary:
       "Wetenschappers hebben alarmerende recordtemperaturen gemeten in de Zuidelijke Oceaan, met mogelijke gevolgen voor zeespiegelstijging.",
     fullText:
@@ -98,7 +98,7 @@ export const newsStories: NewsStory[] = [
     category: "economie",
     locations: [{ country: "Germany", coordinates: [10.0, 51.0] }],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/05/08/1222879/1920x1080a.jpg",
     summary:
       "De Europese economie blijkt veerkrachtig te zijn ondanks aanhoudende inflatiedruk en geopolitieke spanningen.",
     date: "2023-05-07",
@@ -110,7 +110,7 @@ export const newsStories: NewsStory[] = [
     category: "cultuur",
     locations: [{ country: "Thailand", coordinates: [100.5, 13.75] }],
     region: "Asia",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/01/23/1182876/1920x1080a.jpg",
     summary:
       "Een nieuw internationaal festival brengt diverse Aziatische culturele tradities samen in een maand van vieringen en uitwisselingen.",
     fullText:
@@ -124,7 +124,7 @@ export const newsStories: NewsStory[] = [
     category: "tech",
     locations: [{ country: "United States", coordinates: [-95.71, 37.09] }],
     region: "North America",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2022/03/17/842833/1920x1080a.jpg",
     summary:
       "Een internationaal team van wetenschappers heeft een significante doorbraak bereikt in kwantumcomputing door een nieuw type qubit te ontwikkelen.",
     date: "2023-05-05",
@@ -135,7 +135,7 @@ export const newsStories: NewsStory[] = [
     category: "klimaat",
     locations: [{ country: "Brazil", coordinates: [-55.0, -10.0] }],
     region: "South America",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2024/11/14/1157629/1920x1080a.jpg",
     summary:
       "Brazilië opent een nieuw observatorium om ontbossing en klimaatverandering in het Amazonegebied te monitoren.",
     date: "2023-06-01",
@@ -146,7 +146,7 @@ export const newsStories: NewsStory[] = [
     category: "politiek",
     locations: [{ country: "Senegal", coordinates: [-17.44, 14.69] }],
     region: "Africa",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2024/11/18/1158961/1920x1080a.jpg",
     summary:
       "In een historische verkiezing is de eerste vrouwelijke president van Senegal verkozen, wat wereldwijd wordt geprezen als een doorbraak in gendergelijkheid.",
     date: "2023-04-26",
@@ -157,7 +157,7 @@ export const newsStories: NewsStory[] = [
     category: "klimaat",
     locations: [{ country: "Australia", coordinates: [145.0, -18.0] }],
     region: "Oceania",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2023/04/08/959046/1920x1080a.jpg",
     summary:
       "De Australische overheid kondigt een groot investeringspakket aan voor het herstel van het Great Barrier Reef.",
     date: "2023-06-02",
@@ -168,7 +168,7 @@ export const newsStories: NewsStory[] = [
     category: "economie",
     locations: [{ country: "Germany", coordinates: [13.4, 52.52] }],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/30/1220231/1920x1080a.jpg",
     summary:
       "De verkoop van elektrische auto's is wereldwijd met 30% gestegen, met Duitsland als een van de grootste markten.",
     date: "2023-04-25",
@@ -179,7 +179,7 @@ export const newsStories: NewsStory[] = [
     category: "klimaat",
     locations: [{ country: "Iran", coordinates: [51.38, 35.68] }],
     region: "Middle East",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/24/1217799/1920x1080a.jpg",
     summary:
       "Een aardbeving met een kracht van 6.1 op de schaal van Richter heeft het noorden van Iran getroffen, met schade aan infrastructuur en honderden gewonden.",
     date: "2023-04-24",
@@ -190,7 +190,7 @@ export const newsStories: NewsStory[] = [
     category: "tech",
     locations: [{ country: "Sweden", coordinates: [18.06, 59.33] }],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/05/04/1221506/1920x1080a.jpg",
     summary:
       "Onder leiding van Zweedse onderzoekers is een wereldwijd onderzoek gestart naar de ethische implicaties van gezichtsherkenningstechnologie.",
     date: "2023-04-23",
@@ -201,7 +201,7 @@ export const newsStories: NewsStory[] = [
     category: "klimaat",
     locations: [{ country: "DR Congo", coordinates: [23.5, -2.0] }],
     region: "Africa",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/03/24/1206627/1920x1080a.jpg",
     summary:
       "De Democratische Republiek Congo lanceert een nieuwe campagne om de ontbossing in het Congobekken tegen te gaan.",
     date: "2023-06-03",
@@ -212,7 +212,7 @@ export const newsStories: NewsStory[] = [
     category: "cultuur",
     locations: [{ country: "Egypt", coordinates: [31.23, 30.04] }],
     region: "Africa",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2024/03/04/1059454/1920x1080a.jpg",
     summary:
       "In Cairo is een moderne culturele hub geopend die kunst, muziek en educatie samenbrengt, met als doel jongeren aan te moedigen hun creativiteit te ontwikkelen.",
     date: "2023-04-22",
@@ -224,7 +224,7 @@ export const newsStories: NewsStory[] = [
     category: "tech",
     locations: [{ country: "Norway", coordinates: [10.75, 59.91] }],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/03/20/1205169/1920x1080a.jpg",
     summary:
       "Een onderzoeksteam in Noorwegen heeft een potentieel medicijn ontwikkeld voor een zeldzame genetische zenuwziekte, dat nu klinisch getest wordt.",
     date: "2023-04-21",
@@ -262,17 +262,6 @@ export const newsStories: NewsStory[] = [
     summary:
       "Duizenden Zuid-Koreaanse jongeren gingen de straat op in Seoul om te protesteren tegen de hoge werkdruk en prestatiedruk binnen het onderwijs.",
     date: "2023-05-04",
-  },
-  {
-    id: "10",
-    title: "Nederland kondigt nieuwe windparken op Noordzee aan",
-    category: "klimaat",
-    locations: [{ country: "Netherlands", coordinates: [4.9, 52.37] }],
-    region: "Europe",
-    imageUrl: "/placeholder.svg",
-    summary:
-      "De Nederlandse regering investeert in meerdere nieuwe windparken op de Noordzee om de energietransitie te versnellen.",
-    date: "2023-05-03",
   },
   {
     id: "11",
@@ -453,6 +442,141 @@ export const newsStories: NewsStory[] = [
       "Zwitserland houdt een nationaal referendum over de regulering van kunstmatige intelligentie, waarbij privacy en transparantie centraal staan.",
     date: "2023-04-09",
   },
+  {
+    id: "150",
+    title: "NAVO vergadert over uitbreiding defensie in Baltische staten",
+    category: "politiek",
+    locations: [
+      { country: "Estonia", coordinates: [25.0136, 58.5953] },
+      { country: "Latvia", coordinates: [24.6032, 56.8796] },
+      { country: "Lithuania", coordinates: [23.8813, 55.1694] }
+    ],
+    region: "Europe",
+    imageUrl: "/placeholder.svg",
+    summary: "De NAVO overweegt extra troepen te stationeren in de Baltische staten vanwege toenemende dreiging vanuit Rusland.",
+    date: "2023-05-10"
+  },
+  {
+    id: "151",
+    title: "China en India houden gezamenlijke grenspatrouilles",
+    category: "politiek",
+    locations: [
+      { country: "China", coordinates: [104.1954, 35.8617] },
+      { country: "India", coordinates: [78.9629, 20.5937] }
+    ],
+    region: "Asia",
+    imageUrl: "/placeholder.svg",
+    summary: "Voor het eerst in jaren werken China en India samen aan patrouilles in het omstreden grensgebied in de Himalaya.",
+    date: "2023-05-10"
+  },
+  {
+    id: "152",
+    title: "Topoverleg tussen Frankrijk, Duitsland en Oekraïne over wapenleveranties",
+    category: "politiek",
+    locations: [
+      { country: "France", coordinates: [2.2137, 46.2276] },
+      { country: "Germany", coordinates: [10.4515, 51.1657] },
+      { country: "Ukraine", coordinates: [31.1656, 48.3794] }
+    ],
+    region: "Europe",
+    imageUrl: "/placeholder.svg",
+    summary: "Leiders van Frankrijk, Duitsland en Oekraïne spreken over versnelde levering van luchtafweersystemen en tanks.",
+    date: "2023-05-10"
+  },
+  {
+    id: "153",
+    title: "VS en Japan hernieuwen defensieakkoord in de Stille Oceaan",
+    category: "politiek",
+    locations: [
+      { country: "United States", coordinates: [-95.7129, 37.0902] },
+      { country: "Japan", coordinates: [138.2529, 36.2048] }
+    ],
+    region: "Asia-Pacific",
+    imageUrl: "/placeholder.svg",
+    summary: "De Verenigde Staten en Japan hebben hun militaire samenwerking versterkt te midden van de spanningen rond Taiwan.",
+    date: "2023-05-10"
+  },
+  {
+    id: "154",
+    title: "G7 bespreekt sancties tegen Iran en Venezuela",
+    category: "politiek",
+    locations: [
+      { country: "Iran", coordinates: [53.6880, 32.4279] },
+      { country: "Venezuela", coordinates: [-66.5897, 6.4238] },
+      { country: "Canada", coordinates: [-106.3468, 56.1304] }
+    ],
+    region: "Global",
+    imageUrl: "/placeholder.svg",
+    summary: "Tijdens de G7-top wordt gesproken over nieuwe economische sancties tegen Iran en Venezuela vanwege mensenrechtenschendingen.",
+    date: "2023-05-10"
+  },
+  {
+    id: "155",
+    title: "Turkije blokkeert Zweeds NAVO-lidmaatschap opnieuw",
+    category: "politiek",
+    locations: [
+      { country: "Turkey", coordinates: [35.2433, 38.9637] },
+      { country: "Sweden", coordinates: [18.6435, 60.1282] }
+    ],
+    region: "Europe",
+    imageUrl: "/placeholder.svg",
+    summary: "De Turkse regering stelt dat Zweden nog niet genoeg stappen heeft gezet tegen Koerdische groeperingen.",
+    date: "2023-05-10"
+  },
+  {
+    id: "156",
+    title: "Italië en Griekenland onder druk door toegenomen migratiestromen",
+    category: "politiek",
+    locations: [
+      { country: "Italy", coordinates: [12.5674, 41.8719] },
+      { country: "Greece", coordinates: [21.8243, 39.0742] },
+      { country: "Libya", coordinates: [17.2283, 26.3351] }
+    ],
+    region: "Mediterranean",
+    imageUrl: "/placeholder.svg",
+    summary: "Nieuwe bootvluchtelingen uit Noord-Afrika zetten de opvangcapaciteit van Zuid-Europa opnieuw onder druk.",
+    date: "2023-05-10"
+  },
+  {
+    id: "157",
+    title: "Spanning stijgt tussen Servië en Kosovo",
+    category: "politiek",
+    locations: [
+      { country: "Serbia", coordinates: [21.0059, 44.0165] },
+      { country: "Kosovo", coordinates: [20.9020, 42.6026] }
+    ],
+    region: "Europe",
+    imageUrl: "/placeholder.svg",
+    summary: "Nieuwe confrontaties tussen Servische en Kosovaarse troepen zorgen voor zorgen bij de EU over regionale stabiliteit.",
+    date: "2023-05-10"
+  },
+  {
+    id: "158",
+    title: "Noorwegen en Finland investeren samen in Arctische infrastructuur",
+    category: "politiek",
+    locations: [
+      { country: "Norway", coordinates: [8.4689, 60.4720] },
+      { country: "Finland", coordinates: [25.7482, 61.9241] }
+    ],
+    region: "Arctic",
+    imageUrl: "/placeholder.svg",
+    summary: "Beide landen werken aan een nieuwe spoorlijn en energieverbinding in het hoge noorden om strategisch voordeel te vergroten.",
+    date: "2023-05-10"
+  },
+  {
+    id: "159",
+    title: "Diplomatie tussen Israël en Saoedi-Arabië krijgt nieuwe impuls",
+    category: "politiek",
+    locations: [
+      { country: "Israel", coordinates: [34.8516, 31.0461] },
+      { country: "Saudi Arabia", coordinates: [45.0792, 23.8859] },
+      { country: "United States", coordinates: [-95.7129, 37.0902] }
+    ],
+    region: "Middle East",
+    imageUrl: "/placeholder.svg",
+    summary: "Na geheime gesprekken in Washington lijkt een historische diplomatieke doorbraak tussen Israël en Saoedi-Arabië nabij.",
+    date: "2023-05-10"
+  }
 ];
 
 export const categories = [
