@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import {
   newsStories,
   getStoriesByCategory,
@@ -10,190 +10,143 @@ import SearchBar from "@/components/SearchBar";
 import CategoryFilters from "@/components/CategoryFilters";
 import NewsCard from "@/components/NewsCard";
 import { toast } from "sonner";
-import CategoryPill from "@/components/CategoryPill";
+import { getCountryISO } from "@/utils/countryMapping";
 
 const Index = () => {
-  const [stories, setStories] = useState<NewsStory[]>(newsStories);
+  const [stories, setStories] = useState<NewsStory[]>([]);
+  const [storiesForGlobe, setStoriesForGlobe] = useState<NewsStory[]>(newsStories);
   const [selectedStory, setSelectedStory] = useState<NewsStory | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
-  const [visibleCountries, setVisibleCountries] = useState<string[]>([]);
+  const [visibleStoryIdsFromGlobe, setVisibleStoryIdsFromGlobe] = useState<string[] | null>(null);
+  const [focusedCoordinates, setFocusedCoordinates] = useState<
+    [number, number] | null
+  >(null);
+  const [highlightedCountryId, setHighlightedCountryId] = useState<string | null>(
+    null
+  );
 
-  // Filter stories based on category, search query, and visible countries
-  const filteredStories = useMemo(() => {
-    return stories
-      .filter((story) => {
-        // Apply category filter if active
-        if (activeCategory && story.category !== activeCategory && 
-            !(activeCategory === 'politics' && story.category === 'politiek') && 
-            !(activeCategory === 'technology' && story.category === 'techniek') &&
-            !(activeCategory === 'science' && story.category === 'klimaat')) {
-          return false;
-        }
-        
-        // Apply search filter if query exists
-        if (
-          searchQuery &&
-          !story.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-          !story.summary.toLowerCase().includes(searchQuery.toLowerCase())
-        ) {
-          return false;
-        }
-        
-        // Apply visibility filter if we have visible countries
-        if (visibleCountries.length > 0) {
-          // Only show stories with countries visible in the current view
-          return visibleCountries.includes(story.country);
-        }
-        
-        return true;
-      })
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [stories, activeCategory, searchQuery, visibleCountries]);
-
-  // Handle category selection
-  useEffect(() => {
-    const filteredStories = getStoriesByCategory(activeCategory);
-    setStories(filteredStories);
-
-    if (activeCategory) {
-      toast.info(
-        `${filteredStories.length} verhalen in deze categorie gevonden`
-      );
-    }
-  }, [activeCategory]);
-
-  // Handle search
-  const handleSearch = (query: string) => {
-    if (!query.trim()) {
-      setStories(getStoriesByCategory(activeCategory));
-      setSearchQuery("");
-      return;
-    }
-
-    setSearchQuery(query);
-    const results = getStoriesBySearch(query);
-    setStories(results);
-
-    toast.info(`${results.length} resultaten gevonden voor "${query}"`);
+  const handleVisibleStoriesChange = (ids: string[]) => {
+    setVisibleStoryIdsFromGlobe(ids);
   };
 
-  // Handle story selection
+  useEffect(() => {
+    let result = [...newsStories];
+    const categoryFilterActive = !!activeCategory;
+    const searchQueryActive = searchQuery.trim() !== "";
+
+    if (categoryFilterActive && searchQueryActive) {
+      const categoryStories = getStoriesByCategory(activeCategory);
+      const searchResults = getStoriesBySearch(searchQuery);
+      result = newsStories.filter(story =>
+        categoryStories.some(cs => cs.id === story.id) &&
+        searchResults.some(sr => sr.id === story.id)
+      );
+    } else if (categoryFilterActive) {
+      result = getStoriesByCategory(activeCategory);
+    } else if (searchQueryActive) {
+      result = getStoriesBySearch(searchQuery);
+    }
+    setStoriesForGlobe(result);
+  }, [activeCategory, searchQuery]);
+
+  useEffect(() => {
+    let filteredForDisplay = [...storiesForGlobe];
+
+    if (visibleStoryIdsFromGlobe !== null) {
+      if (visibleStoryIdsFromGlobe.length > 0) {
+        filteredForDisplay = filteredForDisplay.filter(story => 
+          visibleStoryIdsFromGlobe.includes(story.id)
+        );
+      } else {
+        filteredForDisplay = [];
+      }
+    }
+
+    filteredForDisplay.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    setStories(filteredForDisplay.slice(0, 10));
+
+    // Toast messages (can be adjusted based on the final count in 'stories')
+    // const finalStoryCount = filteredForDisplay.slice(0, 10).length;
+    // if (searchQuery.trim()) {
+    //   toast.info(`${finalStoryCount} resultaten gevonden voor "${searchQuery}" (zichtbaar op kaart)`);
+    // } else if (activeCategory) {
+    //   toast.info(`${finalStoryCount} verhalen in categorie "${activeCategory}" (zichtbaar op kaart)`);
+    // }
+  }, [storiesForGlobe, visibleStoryIdsFromGlobe, activeCategory, searchQuery]);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
   const handleStorySelect = (story: NewsStory) => {
     setSelectedStory(story);
-    // In a real app, this would animate the globe to center on the story's location
+    if (story.locations && story.locations.length > 0) {
+      setFocusedCoordinates(story.locations[0].coordinates);
+      setHighlightedCountryId(getCountryISO(story.locations[0].country));
+    } else {
+      setFocusedCoordinates(null);
+      setHighlightedCountryId(null);
+    }
   };
 
-  // Handle mouse enter on a story card
-  const handleStoryMouseEnter = (story: NewsStory) => {
-    setHoveredCountry(story.country);
-  };
-
-  // Handle mouse leave from a story card
-  const handleStoryMouseLeave = () => {
-    setHoveredCountry(null);
-  };
-
-  // Handle visible countries change from Globe component
-  const handleVisibleCountriesChange = (countries: string[]) => {
-    setVisibleCountries(countries);
-  };
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
-      {/* Header with search and filters */}
-      <header className="w-full py-6 px-4">
+    <div className="w-screen h-screen flex flex-col bg-background text-foreground overflow-hidden">
+      <header className="w-full py-6 px-4 flex-shrink-0">
         <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row gap-3 mb-4">
-            <input
-              type="text"
-              placeholder="Search news..."
-              className="flex-1 p-2 border rounded-md bg-background"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            
-            {/* Category filters */}
-            <div className="flex gap-2 flex-wrap">
-              <CategoryPill
-                category="all"
-                label="All"
-                isActive={activeCategory === null}
-                onClick={() => setActiveCategory(null)}
-              />
-              <CategoryPill
-                category="politics"
-                label="Politics"
-                isActive={activeCategory === "politics"}
-                onClick={() => setActiveCategory("politics")}
-              />
-              <CategoryPill
-                category="technology"
-                label="Tech"
-                isActive={activeCategory === "technology"}
-                onClick={() => setActiveCategory("technology")}
-              />
-              <CategoryPill
-                category="science"
-                label="Science"
-                isActive={activeCategory === "science"}
-                onClick={() => setActiveCategory("science")}
-              />
-            </div>
-          </div>
-          
-          {/* Visibility filter indicator */}
-          {visibleCountries.length > 0 && (
-            <div className="mb-4 py-2 px-3 bg-blue-50 border border-blue-200 rounded-md flex items-center">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
-              <span className="text-sm text-blue-700">
-                Showing {filteredStories.length} news items from {visibleCountries.length} visible regions
-              </span>
-            </div>
-          )}
+          <SearchBar onSearch={handleSearch} />
+          <CategoryFilters
+            activeCategory={activeCategory}
+            setActiveCategory={setActiveCategory}
+          />
         </div>
       </header>
 
-      {/* Main content: Globe and news feed */}
-      <main className="flex-1 flex flex-col lg:flex-row container mx-auto px-4 gap-8 pb-8">
-        {/* Left side: Globe */}
-        <div className="flex-1 lg:h-[calc(100vh-220px)] h-[50vh] relative">
+      <main className="flex-1 flex container mx-auto px-4 gap-8 pb-8 overflow-hidden">
+        <div className="flex-1 flex items-center justify-center relative min-h-0">
           <Globe
             width={800}
             height={800}
-            zoomTargetCountry={hoveredCountry}
-            onVisibleCountriesChange={handleVisibleCountriesChange}
             openModal={(data) => {
-              console.log("Modal data", data);
-              // eventueel setSelectedStory(data)
+              const story = stories.find(s => s.id === data.prismic);
+              if (story) {
+                handleStorySelect(story);
+              }
             }}
+            stories={storiesForGlobe}
+            renderableStoryIds={stories.map(s => s.id)}
+            focusedCoordinates={focusedCoordinates}
+            highlightedCountryId={highlightedCountryId}
+            onVisibleStoriesChange={handleVisibleStoriesChange}
           />
         </div>
 
-        {/* Right side: News feed */}
-        <div className="lg:w-96 w-full">
-          <div className="bg-card rounded-lg shadow-lg p-4">
+        <div className="lg:w-96 w-full flex-shrink-0">
+          <div className="bg-card rounded-lg shadow-lg p-4 h-full flex flex-col">
             <h2 className="text-lg font-semibold mb-4">
               {searchQuery
                 ? `Zoekresultaten voor "${searchQuery}"`
                 : activeCategory
-                ? `${
-                    activeCategory.charAt(0).toUpperCase() +
-                    activeCategory.slice(1)
-                  } nieuws`
+                ? `${activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)} nieuws`
                 : "Wereldnieuws"}
             </h2>
-
-            <div className="space-y-4 max-h-[calc(100vh-300px)] overflow-y-auto pr-2">
-              {filteredStories.length > 0 ? (
-                filteredStories.map((story) => (
+            <div className="flex-1 space-y-4 overflow-y-auto pr-2 min-h-0">
+              {stories.length > 0 ? (
+                stories.map((story) => (
                   <NewsCard
                     key={story.id}
                     story={story}
                     onClick={handleStorySelect}
-                    onMouseEnter={() => handleStoryMouseEnter(story)}
-                    onMouseLeave={handleStoryMouseLeave}
                   />
                 ))
               ) : (
@@ -203,21 +156,26 @@ const Index = () => {
               )}
             </div>
           </div>
-
-          {/* Selected story details */}
-          {selectedStory && (
-            <div className="mt-4 bg-card rounded-lg shadow-lg p-4 animate-fade-in">
-              <h2 className="text-lg font-semibold mb-2">
-                {selectedStory.title}
-              </h2>
-              <p className="text-sm text-muted-foreground mb-2">
-                {selectedStory.date} • {selectedStory.country}
-              </p>
-              <p className="text-sm">{selectedStory.summary}</p>
-            </div>
-          )}
         </div>
       </main>
+
+      {selectedStory && (
+        <div
+          className="fixed left-[40%] bottom-8 z-50 transform -translate-x-1/2 bg-card rounded-xl shadow-lg px-6 py-4 max-w-md w-[90vw] cursor-pointer border border-border animate-fade-in"
+          style={{ minWidth: 320, maxWidth: 480, boxShadow: '0 4px 32px rgba(0,0,0,0.18)' }}
+          onClick={() => window.open(`/article/${selectedStory.id}`, '_blank')}
+        >
+          <h2 className="text-lg font-semibold mb-2">{selectedStory.title}</h2>
+          <p className="text-sm text-muted-foreground mb-2">
+            {selectedStory.date} • 
+            {selectedStory.locations && selectedStory.locations.length > 0 
+              ? selectedStory.locations.map(loc => loc.country).join(', ') 
+              : 'Locatie onbekend'}
+          </p>
+          <p className="text-sm line-clamp-4">{selectedStory.summary}</p>
+          <div className="text-xs text-primary mt-2">Klik om het volledige artikel te openen</div>
+        </div>
+      )}
     </div>
   );
 };
