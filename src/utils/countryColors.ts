@@ -1,25 +1,38 @@
 // Fixed palette for the most common countries
 const palette: string[] = [
-  '#FF6B6B', // Red
-  '#FFD93D', // Yellow
-  '#6BCB77', // Green
-  '#4D96FF', // Blue
-  '#FF922B', // Orange
-  '#845EC2', // Purple
-  '#FFC75F', // Light Yellow
-  '#0081CF', // Teal
-  '#B0A8B9', // Grey
-  '#F9F871', // Light Yellow
-  '#F76E11', // Orange
-  '#A3C9A8', // Mint
-  '#F24C4C', // Red
-  '#43AA8B', // Green
-  '#3A86FF', // Blue
-  '#FFB4A2', // Peach
-  '#B5838D', // Mauve
-  '#6D6875', // Grey
-  '#FFBE0B', // Gold
-  '#8338EC', // Violet
+  // From Sasha Trubetskoy's list (20 colors)
+  '#e6194b', // Red
+  '#3cb44b', // Green
+  '#ffe119', // Yellow
+  '#4363d8', // Blue
+  '#f58231', // Orange
+  '#911eb4', // Purple
+  '#46f0f0', // Cyan
+  '#f032e6', // Magenta
+  '#bcf60c', // Lime
+  '#fabebe', // Pink
+  '#008080', // Teal
+  '#e6beff', // Lavender
+  '#9a6324', // Brown
+  '#fffac8', // Beige
+  '#800000', // Maroon
+  '#aaffc3', // Mint
+  '#808000', // Olive
+  '#ffd8b1', // Apricot
+  '#000075', // Navy
+  '#808080', // Grey
+
+  // Additional distinct colors (10 more)
+  '#FF6B6B', // Light Red
+  '#FFD700', // Gold
+  '#6A5ACD', // Slate Blue
+  '#FF7F50', // Coral
+  '#D2691E', // Chocolate
+  '#00FF7F', // Spring Green
+  '#DC143C', // Crimson
+  '#C71585', // Medium Violet Red
+  '#20B2AA', // Light Sea Green
+  '#FF4500', // Orange Red
 ];
 
 const isoToPaletteIndex: { [iso: string]: number } = {};
