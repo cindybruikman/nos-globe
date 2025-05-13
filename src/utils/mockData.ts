@@ -458,7 +458,7 @@ export const newsStories: NewsStory[] = [
 export const categories = [
   { id: "cultuur", name: "Cultuur" },
   { id: "economie", name: "Economie" },
-  { id: "laatste", name: "Laatste" },
+  { id: "klimaat", name: "Klimaat" },
   { id: "opmerkelijk", name: "Opmerkelijk" },
   { id: "politiek", name: "Politiek" },
   { id: "sport", name: "Sport" },

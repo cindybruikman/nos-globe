@@ -9,7 +9,7 @@ interface CategoryFiltersProps {
 const iconMap: Record<string, string> = {
   cultuur: new URL("@/assets/icons/cultuur-dark.svg", import.meta.url).href,
   economie: new URL("@/assets/icons/economie-dark.svg", import.meta.url).href,
-  laatste: new URL("@/assets/icons/laatste-dark.svg", import.meta.url).href,
+  klimaat: new URL("@/assets/icons/klimaat-dark.svg", import.meta.url).href,
   opmerkelijk: new URL("@/assets/icons/opmerkelijk-dark.svg", import.meta.url)
     .href,
   politiek: new URL("@/assets/icons/politiek-dark.svg", import.meta.url).href,
