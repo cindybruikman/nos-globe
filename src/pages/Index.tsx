@@ -9,9 +9,12 @@ import { TheWorld as Globe } from "@/components/Globe";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilters from "@/components/CategoryFilters";
 import NewsCard from "@/components/NewsCard";
+import TimelineSelector from "@/components/TimelineSelector";
 import { toast } from "sonner";
 import { getCountryISO } from "@/utils/countryMapping";
 import NOSLogo from "@/components/NOSLogo";
+import { isWithinInterval, parseISO, format } from "date-fns";
+import { nl } from "date-fns/locale";
 
 const Index = () => {
   const [stories, setStories] = useState<NewsStory[]>([]);
@@ -19,6 +22,16 @@ const Index = () => {
   const [selectedStory, setSelectedStory] = useState<NewsStory | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [dateRange, setDateRange] = useState<[string, string]>(() => {
+    // Find min and max dates from all stories
+    const dates = newsStories.map(story => new Date(story.date).getTime());
+    const minDate = new Date(Math.min(...dates));
+    const maxDate = new Date(Math.max(...dates));
+    return [
+      minDate.toISOString().split('T')[0],
+      maxDate.toISOString().split('T')[0]
+    ];
+  });
   const [visibleStoryIdsFromGlobe, setVisibleStoryIdsFromGlobe] = useState<string[] | null>(null);
   const [focusedCoordinates, setFocusedCoordinates] = useState<
     [number, number] | null
@@ -26,6 +39,18 @@ const Index = () => {
   const [highlightedCountryIds, setHighlightedCountryIds] = useState<string[] | null>(
     null
   );
+
+  // Function to get min and max dates from stories
+  const getMinMaxDates = (): { minDate: string; maxDate: string } => {
+    const dates = newsStories.map(story => new Date(story.date).getTime());
+    const minDate = new Date(Math.min(...dates));
+    const maxDate = new Date(Math.max(...dates));
+    
+    return {
+      minDate: minDate.toISOString().split('T')[0],
+      maxDate: maxDate.toISOString().split('T')[0]
+    };
+  };
 
   const handleVisibleStoriesChange = (ids: string[]) => {
     setVisibleStoryIdsFromGlobe(ids);
@@ -41,7 +66,9 @@ const Index = () => {
     let result = [...newsStories];
     const categoryFilterActive = !!activeCategory;
     const searchQueryActive = searchQuery.trim() !== "";
+    const dateRangeActive = dateRange && dateRange.length === 2;
 
+    // Apply category and search filters first
     if (categoryFilterActive && searchQueryActive) {
       const categoryStories = getStoriesByCategory(activeCategory);
       const searchResults = getStoriesBySearch(searchQuery);
@@ -54,8 +81,21 @@ const Index = () => {
     } else if (searchQueryActive) {
       result = getStoriesBySearch(searchQuery);
     }
+
+    // Apply date range filter
+    if (dateRangeActive) {
+      const [startDate, endDate] = dateRange;
+      result = result.filter(story => {
+        const storyDate = parseISO(story.date);
+        return isWithinInterval(storyDate, {
+          start: parseISO(startDate),
+          end: parseISO(endDate)
+        });
+      });
+    }
+
     setStoriesForGlobe(result);
-  }, [activeCategory, searchQuery]);
+  }, [activeCategory, searchQuery, dateRange]);
 
   useEffect(() => {
     let filteredForDisplay = [...storiesForGlobe];
@@ -73,14 +113,6 @@ const Index = () => {
     filteredForDisplay.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     setStories(filteredForDisplay.slice(0, 10));
-
-    // Toast messages (can be adjusted based on the final count in 'stories')
-    // const finalStoryCount = filteredForDisplay.slice(0, 10).length;
-    // if (searchQuery.trim()) {
-    //   toast.info(`${finalStoryCount} resultaten gevonden voor "${searchQuery}" (zichtbaar op kaart)`);
-    // } else if (activeCategory) {
-    //   toast.info(`${finalStoryCount} verhalen in categorie "${activeCategory}" (zichtbaar op kaart)`);
-    // }
   }, [storiesForGlobe, visibleStoryIdsFromGlobe, activeCategory, searchQuery]);
 
   const handleSearch = (query: string) => {
@@ -108,6 +140,9 @@ const Index = () => {
     };
   }, []);
 
+  // Get min and max dates for the TimelineSelector
+  const { minDate, maxDate } = getMinMaxDates();
+
   return (
     <div className="w-screen h-screen flex flex-col bg-background text-foreground overflow-hidden">
       <header className="w-full py-4 px-4 flex-shrink-0">
@@ -123,11 +158,21 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="flex-1 flex container mx-auto px-4 gap-8 pb-4 pt-4 overflow-hidden">
-        <div className="flex-1 flex items-center justify-center relative min-h-0">
+      <main className="flex-1 flex w-full px-12 py-8 overflow-hidden gap-4">
+        {/* Timeline Selector on the left (with proper margins) */}
+        <div className="w-52 flex-shrink-0 h-[calc(100%-50px)] self-center">
+          <TimelineSelector 
+            minDate={minDate}
+            maxDate={maxDate}
+            onRangeChange={handleDateRangeChange}
+          />
+        </div>
+
+        {/* Globe in the center with more space and wider canvas */}
+        <div className="flex-1 flex items-center justify-center relative min-h-0 overflow-hidden">
           <Globe
-            width={800}
-            height={800}
+            width={1200}
+            height={900}
             openModal={(data) => {
               const story = stories.find(s => s.id === data.prismic);
               if (story) {
@@ -142,15 +187,22 @@ const Index = () => {
           />
         </div>
 
-        <div className="lg:w-96 w-full flex-shrink-0">
-          <div className="bg-card rounded-lg shadow-lg p-4 h-full flex flex-col">
-            <h2 className="text-lg font-semibold mb-4">
+        {/* News sidebar on the right (with proper margins) */}
+        <div className="w-72 flex-shrink-0 h-[calc(100%-50px)] self-center">
+          <div className="bg-card rounded-xl shadow-lg p-5 h-full flex flex-col">
+            <h2 className="text-lg font-semibold mb-1">
               {searchQuery
                 ? `Zoekresultaten voor "${searchQuery}"`
                 : activeCategory
                 ? `${activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)} nieuws`
                 : "Wereldnieuws"}
             </h2>
+            
+            {/* Add date range info */}
+            <p className="text-xs text-muted-foreground mb-4">
+              {format(parseISO(dateRange[0]), "d MMM yyyy", { locale: nl })} - {format(parseISO(dateRange[1]), "d MMM yyyy", { locale: nl })}
+            </p>
+            
             <div className="flex-1 space-y-4 overflow-y-auto pr-2 min-h-0">
               {stories.length > 0 ? (
                 stories.map((story) => (
