@@ -22,7 +22,7 @@ const Index = () => {
   const [focusedCoordinates, setFocusedCoordinates] = useState<
     [number, number] | null
   >(null);
-  const [highlightedCountryId, setHighlightedCountryId] = useState<string | null>(
+  const [highlightedCountryIds, setHighlightedCountryIds] = useState<string[] | null>(
     null
   );
 
@@ -84,10 +84,11 @@ const Index = () => {
     setSelectedStory(story);
     if (story.locations && story.locations.length > 0) {
       setFocusedCoordinates(story.locations[0].coordinates);
-      setHighlightedCountryId(getCountryISO(story.locations[0].country));
+      const countryIsos = story.locations.map(loc => getCountryISO(loc.country));
+      setHighlightedCountryIds(countryIsos);
     } else {
       setFocusedCoordinates(null);
-      setHighlightedCountryId(null);
+      setHighlightedCountryIds(null);
     }
   };
 
@@ -126,7 +127,7 @@ const Index = () => {
             stories={storiesForGlobe}
             renderableStoryIds={stories.map(s => s.id)}
             focusedCoordinates={focusedCoordinates}
-            highlightedCountryId={highlightedCountryId}
+            highlightedCountryIds={highlightedCountryIds}
             onVisibleStoriesChange={handleVisibleStoriesChange}
           />
         </div>
