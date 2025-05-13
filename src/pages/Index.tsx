@@ -31,6 +31,12 @@ const Index = () => {
     setVisibleStoryIdsFromGlobe(ids);
   };
 
+  const handleClosePreview = () => {
+    setSelectedStory(null);
+    setFocusedCoordinates(null);
+    setHighlightedCountryIds(null);
+  };
+
   useEffect(() => {
     let result = [...newsStories];
     const categoryFilterActive = !!activeCategory;
@@ -166,19 +172,30 @@ const Index = () => {
 
       {selectedStory && (
         <div
-          className="fixed left-[40%] bottom-8 z-50 transform -translate-x-1/2 bg-card rounded-xl shadow-lg px-6 py-4 max-w-md w-[90vw] cursor-pointer border border-border animate-fade-in"
+          className="fixed left-[40%] bottom-8 z-50 transform -translate-x-1/2 bg-card rounded-xl shadow-lg px-6 py-4 max-w-md w-[90vw] border border-border animate-fade-in"
           style={{ minWidth: 320, maxWidth: 480, boxShadow: '0 4px 32px rgba(0,0,0,0.18)' }}
-          onClick={() => window.open(`/article/${selectedStory.id}`, '_blank')}
         >
-          <h2 className="text-lg font-semibold mb-2">{selectedStory.title}</h2>
-          <p className="text-sm text-muted-foreground mb-2">
-            {selectedStory.date} • 
-            {selectedStory.locations && selectedStory.locations.length > 0 
-              ? selectedStory.locations.map(loc => loc.country).join(', ') 
-              : 'Locatie onbekend'}
-          </p>
-          <p className="text-sm line-clamp-4">{selectedStory.summary}</p>
-          <div className="text-xs text-primary mt-2">Klik om het volledige artikel te openen</div>
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClosePreview();
+            }}
+            className="absolute top-2 right-2 text-foreground hover:text-muted-foreground text-2xl leading-none"
+            aria-label="Sluit artikel preview"
+          >
+            &times;
+          </button>
+          <div onClick={() => window.open(`/article/${selectedStory.id}`, '_blank')} className="cursor-pointer">
+            <h2 className="text-lg font-semibold mb-2 pr-6">{selectedStory.title}</h2>
+            <p className="text-sm text-muted-foreground mb-2">
+              {selectedStory.date} • 
+              {selectedStory.locations && selectedStory.locations.length > 0 
+                ? selectedStory.locations.map(loc => loc.country).join(', ') 
+                : 'Locatie onbekend'}
+            </p>
+            <p className="text-sm line-clamp-4">{selectedStory.summary}</p>
+            <div className="text-xs text-primary mt-2">Klik om het volledige artikel te openen</div>
+          </div>
         </div>
       )}
     </div>

@@ -70,6 +70,8 @@ export const TheWorld: React.FC<TheWorldProps> = ({
   const initialScale = useRef(projection.scale()).current; // Depends on projection
   const path = useRef(d3.geoPath().projection(projection)).current; // Depends on projection
 
+  const [currentGlobeRadius, setCurrentGlobeRadius] = useState(initialScale);
+
   const calcCountryPaths = useCallback(() => {
     const currentHighlightedCountryIds = highlightedCountryIdsRef.current;
     const paths = (wereld as WorldGeoJSON).features.map((countryFeature) => {
@@ -216,7 +218,9 @@ export const TheWorld: React.FC<TheWorldProps> = ({
         d3.zoom<SVGSVGElement, unknown>().on("zoom", (e) => {
           if (e.transform.k > 0.3) {
             projection.scale(initialScale * e.transform.k);
-            globe.attr("r", projection.scale());
+            const newRadius = projection.scale();
+            globe.attr("r", newRadius);
+            setCurrentGlobeRadius(newRadius);
             calcCountryPaths();
             incrementMapInteraction();
           } else {
@@ -241,7 +245,9 @@ export const TheWorld: React.FC<TheWorldProps> = ({
           return (t) => {
             projection.rotate(r(t));
             projection.scale(s(t));
-            d3.select(globeRef.current).attr("r", projection.scale());
+            const newRadius = projection.scale();
+            d3.select(globeRef.current).attr("r", newRadius);
+            setCurrentGlobeRadius(newRadius);
             calcCountryPaths();
             incrementMapInteraction();
           };
@@ -249,15 +255,39 @@ export const TheWorld: React.FC<TheWorldProps> = ({
         .on("end", () => {
             incrementMapInteraction();
         });
+    } else {
+      timerRef.current = true;
+      const defaultRotation: [number, number] = [0, -15];
+
+      d3.select(svgRef.current)
+        .transition()
+        .duration(750)
+        .tween("rotate.reset", () => {
+          const r = d3.interpolate(projection.rotate(), defaultRotation);
+          const s = d3.interpolate(projection.scale(), initialScale);
+          return (t) => {
+            projection.rotate(r(t));
+            projection.scale(s(t));
+            const newRadius = projection.scale();
+            d3.select(globeRef.current).attr("r", newRadius);
+            setCurrentGlobeRadius(newRadius);
+            calcCountryPaths();
+            incrementMapInteraction();
+          };
+        })
+        .on("end", () => {
+          timerRef.current = false;
+          incrementMapInteraction();
+        });
     }
-  }, [focusedCoordinates, projection, initialScale, calcCountryPaths]);
+  }, [focusedCoordinates, projection, initialScale, calcCountryPaths, width, height]);
 
   useEffect(() => {
     calcCountryPaths();
     drawGlobe();
     setRotationTimer();
     incrementMapInteraction();
-  }, [width, height]);
+  }, [width, height, projection]);
 
   return (
     <svg
@@ -292,6 +322,13 @@ export const TheWorld: React.FC<TheWorldProps> = ({
             <circle cx="50" cy="50" r="50" fill="#e61e14" />
           <text x="50" y="55" textAnchor="middle" fill="white" fontSize="24">?</text>
         </g>
+        <clipPath id="globeClipPath">
+          <circle
+            cx={width / 2}
+            cy={height / 2}
+            r={currentGlobeRadius}
+          />
+        </clipPath>
       </defs>
       
       <circle
@@ -304,8 +341,8 @@ export const TheWorld: React.FC<TheWorldProps> = ({
         cy={height / 2}
         r={initialScale}
       ></circle>
-      <g className="countries">{allSvgPaths}</g>
-      <g>{allPointPaths}</g>
+      <g className="countries" clipPath="url(#globeClipPath)">{allSvgPaths}</g>
+      <g clipPath="url(#globeClipPath)">{allPointPaths}</g>
     </svg>
   );
 };
