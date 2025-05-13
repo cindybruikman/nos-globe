@@ -89,16 +89,21 @@ export const TheWorld: React.FC<TheWorldProps> = ({
 
   useEffect(() => {
     const currentStoriesForGlobe = storiesRef.current;
-    const visibleIds: string[] = [];
+    const visibleStoryIdsSet = new Set<string>();
     if (currentStoriesForGlobe) {
         currentStoriesForGlobe.forEach((story) => {
-            const coords = projection(story.coordinates);
-            if (coords && coords[0] >= 0 && coords[0] <= width && coords[1] >= 0 && coords[1] <= height) {
-                visibleIds.push(story.id);
+            if (story.locations && story.locations.length > 0) {
+                for (const location of story.locations) {
+                    const coords = projection(location.coordinates);
+                    if (coords && coords[0] >= 0 && coords[0] <= width && coords[1] >= 0 && coords[1] <= height) {
+                        visibleStoryIdsSet.add(story.id);
+                        break;
+                    }
+                }
             }
         });
     }
-    onVisibleStoriesChange(visibleIds);
+    onVisibleStoriesChange(Array.from(visibleStoryIdsSet));
   }, [storiesRef.current, width, height, projection, onVisibleStoriesChange, mapInteractionCounter]);
 
   useEffect(() => {
@@ -108,39 +113,40 @@ export const TheWorld: React.FC<TheWorldProps> = ({
 
     if (currentStoriesForGlobe && renderableStoryIds) {
         currentStoriesForGlobe.forEach((story) => {
-            if (renderableStoryIds.includes(story.id)) {
-                const coords = projection(story.coordinates);
-                if (coords && coords[0] >= 0 && coords[0] <= width && coords[1] >= 0 && coords[1] <= height) {
-                    
-                    const countryISO = getCountryISO(story.country);
-                    const dotColor = countryISO ? getCountryColor(countryISO) : defaultDotColor;
-                    
-                    elements.push(
-                        <circle
-                            key={story.id}
-                            cx={coords[0]}
-                            cy={coords[1]}
-                            r={7}
-                            fill={dotColor}
-                            className="cursor-pointer story-dot"
-                            tabIndex={0}
-                            aria-label={story.title}
-                            onClick={() =>
-                                openModalRef.current({
-                                    prismic: story.id,
-                                    color: story.category,
-                                    type: story.title,
-                                    icon: resolveCategoryIcon(story.category),
-                                })
-                            }
-                        />
-                    );
-                }
+            if (renderableStoryIds.includes(story.id) && story.locations) {
+                story.locations.forEach((location, index) => {
+                    const coords = projection(location.coordinates);
+                    if (coords && coords[0] >= 0 && coords[0] <= width && coords[1] >= 0 && coords[1] <= height) {
+                        const countryISO = getCountryISO(location.country);
+                        const dotColor = countryISO ? getCountryColor(countryISO) : defaultDotColor;
+                        
+                        elements.push(
+                            <circle
+                                key={`${story.id}-${index}`}
+                                cx={coords[0]}
+                                cy={coords[1]}
+                                r={7}
+                                fill={dotColor}
+                                className="cursor-pointer story-dot"
+                                tabIndex={0}
+                                aria-label={`${story.title} (${location.country})`}
+                                onClick={() =>
+                                    openModalRef.current({
+                                        prismic: story.id,
+                                        color: story.category,
+                                        type: story.title,
+                                        icon: resolveCategoryIcon(story.category),
+                                    })
+                                }
+                            />
+                        );
+                    }
+                });
             }
         });
     }
     setAllPointPaths(elements);
-  }, [renderableStoryIds, storiesRef.current, width, height, projection, resolveCategoryIcon, openModalRef, mapInteractionCounter]);
+  }, [renderableStoryIds, storiesRef.current, width, height, projection, resolveCategoryIcon, openModalRef, mapInteractionCounter, getCountryISO, getCountryColor]);
 
   const calcCountryPaths = useCallback(() => {
     const currentHighlightedCountryId = highlightedCountryIdRef.current;

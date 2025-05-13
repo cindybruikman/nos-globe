@@ -82,8 +82,13 @@ const Index = () => {
 
   const handleStorySelect = (story: NewsStory) => {
     setSelectedStory(story);
-    setFocusedCoordinates(story.coordinates);
-    setHighlightedCountryId(getCountryISO(story.country));
+    if (story.locations && story.locations.length > 0) {
+      setFocusedCoordinates(story.locations[0].coordinates);
+      setHighlightedCountryId(getCountryISO(story.locations[0].country));
+    } else {
+      setFocusedCoordinates(null);
+      setHighlightedCountryId(null);
+    }
   };
 
   useEffect(() => {
@@ -162,7 +167,10 @@ const Index = () => {
         >
           <h2 className="text-lg font-semibold mb-2">{selectedStory.title}</h2>
           <p className="text-sm text-muted-foreground mb-2">
-            {selectedStory.date} • {selectedStory.country}
+            {selectedStory.date} • 
+            {selectedStory.locations && selectedStory.locations.length > 0 
+              ? selectedStory.locations.map(loc => loc.country).join(', ') 
+              : 'Locatie onbekend'}
           </p>
           <p className="text-sm line-clamp-4">{selectedStory.summary}</p>
           <div className="text-xs text-primary mt-2">Klik om het volledige artikel te openen</div>
