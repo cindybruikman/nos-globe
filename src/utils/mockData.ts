@@ -32,7 +32,7 @@ export const newsStories: NewsStory[] = [
     category: "politiek",
     locations: [{ country: "Vatican", coordinates: [12.45, 41.9] }],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/21/1216656/1920x1080a.jpg",
     summary:
       "Paus Franciscus heeft opgeroepen tot de vrijlating van journalisten wereldwijd tijdens zijn eerste persontmoeting als nieuwe paus.",
     fullText:
@@ -45,7 +45,7 @@ export const newsStories: NewsStory[] = [
     category: "politiek",
     locations: [{ country: "Palestine", coordinates: [34.3, 31.4] }],
     region: "Middle East",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/05/03/1220906/1920x1080a.jpg",
     summary:
       "De Verenigde Naties waarschuwen dat de gehele bevolking van Gaza hongersnood riskeert door aanhoudende conflicten en blokkades.",
     fullText:
@@ -61,7 +61,7 @@ export const newsStories: NewsStory[] = [
       { country: "Russia", coordinates: [37.61, 55.75] }, // Moscow coordinates
     ],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/05/11/1223938/1920x1080a.jpg",
     summary:
       "Polen en Rusland beschuldigen elkaar wederzijds van provocaties aan de grens, wat leidt tot verhoogde militaire paraatheid.",
     date: "2023-05-09",
@@ -73,7 +73,7 @@ export const newsStories: NewsStory[] = [
     category: "tech",
     locations: [{ country: "Burkina Faso", coordinates: [-1.56, 12.36] }],
     region: "Africa",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/05/12/1224422/1920x1080a.jpg",
     summary:
       "De leider van Burkina Faso is viral gegaan op sociale media dankzij AI-gegenereerde content die zijn charisma benadrukt.",
     date: "2023-05-08",
@@ -85,7 +85,7 @@ export const newsStories: NewsStory[] = [
     category: "klimaat",
     locations: [{ country: "Antarctica", coordinates: [0, -80] }],
     region: "Antarctica",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/03/05/1198609/1920x1080a.jpg",
     summary:
       "Wetenschappers hebben alarmerende recordtemperaturen gemeten in de Zuidelijke Oceaan, met mogelijke gevolgen voor zeespiegelstijging.",
     fullText:
@@ -98,7 +98,7 @@ export const newsStories: NewsStory[] = [
     category: "economie",
     locations: [{ country: "Germany", coordinates: [10.0, 51.0] }],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/05/08/1222879/1920x1080a.jpg",
     summary:
       "De Europese economie blijkt veerkrachtig te zijn ondanks aanhoudende inflatiedruk en geopolitieke spanningen.",
     date: "2023-05-07",
@@ -110,7 +110,7 @@ export const newsStories: NewsStory[] = [
     category: "cultuur",
     locations: [{ country: "Thailand", coordinates: [100.5, 13.75] }],
     region: "Asia",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/01/23/1182876/1920x1080a.jpg",
     summary:
       "Een nieuw internationaal festival brengt diverse Aziatische culturele tradities samen in een maand van vieringen en uitwisselingen.",
     fullText:
@@ -124,7 +124,7 @@ export const newsStories: NewsStory[] = [
     category: "tech",
     locations: [{ country: "United States", coordinates: [-95.71, 37.09] }],
     region: "North America",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2022/03/17/842833/1920x1080a.jpg",
     summary:
       "Een internationaal team van wetenschappers heeft een significante doorbraak bereikt in kwantumcomputing door een nieuw type qubit te ontwikkelen.",
     date: "2023-05-05",
@@ -135,7 +135,7 @@ export const newsStories: NewsStory[] = [
     category: "klimaat",
     locations: [{ country: "Brazil", coordinates: [-55.0, -10.0] }],
     region: "South America",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2024/11/14/1157629/1920x1080a.jpg",
     summary:
       "Brazilië opent een nieuw observatorium om ontbossing en klimaatverandering in het Amazonegebied te monitoren.",
     date: "2023-06-01",
