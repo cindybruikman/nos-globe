@@ -11,6 +11,7 @@ import CategoryFilters from "@/components/CategoryFilters";
 import NewsCard from "@/components/NewsCard";
 import { toast } from "sonner";
 import { getCountryISO } from "@/utils/countryMapping";
+import NOSLogo from "@/components/NOSLogo";
 
 const Index = () => {
   const [stories, setStories] = useState<NewsStory[]>([]);
@@ -105,7 +106,10 @@ const Index = () => {
     <div className="w-screen h-screen flex flex-col bg-background text-foreground overflow-hidden">
       <header className="w-full py-6 px-4 flex-shrink-0">
         <div className="container mx-auto">
-          <SearchBar onSearch={handleSearch} />
+          <div className="flex items-center justify-between gap-4 mb-4">
+            <NOSLogo />
+            <SearchBar onSearch={handleSearch} />
+          </div>
           <CategoryFilters
             activeCategory={activeCategory}
             setActiveCategory={setActiveCategory}
