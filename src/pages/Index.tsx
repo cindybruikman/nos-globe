@@ -13,10 +13,12 @@ import { toast } from "sonner";
 import { getCountryISO } from "@/utils/countryMapping";
 
 const Index = () => {
-  const [stories, setStories] = useState<NewsStory[]>(newsStories.slice(0, 10));
+  const [stories, setStories] = useState<NewsStory[]>([]);
+  const [storiesForGlobe, setStoriesForGlobe] = useState<NewsStory[]>(newsStories);
   const [selectedStory, setSelectedStory] = useState<NewsStory | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [visibleStoryIdsFromGlobe, setVisibleStoryIdsFromGlobe] = useState<string[] | null>(null);
   const [focusedCoordinates, setFocusedCoordinates] = useState<
     [number, number] | null
   >(null);
@@ -24,39 +26,66 @@ const Index = () => {
     null
   );
 
-  // Handle category selection
-  useEffect(() => {
-    const filteredStories = getStoriesByCategory(activeCategory);
-    setStories(filteredStories.slice(0, 10));
-    if (activeCategory) {
-      toast.info(
-        `${filteredStories.length} verhalen in deze categorie gevonden`
-      );
-    }
-  }, [activeCategory]);
-
-  // Handle search
-  const handleSearch = (query: string) => {
-    if (!query.trim()) {
-      const filteredStories = getStoriesByCategory(activeCategory);
-      setStories(filteredStories.slice(0, 10));
-      setSearchQuery("");
-      return;
-    }
-    setSearchQuery(query);
-    const results = getStoriesBySearch(query);
-    setStories(results.slice(0, 10));
-    toast.info(`${results.length} resultaten gevonden voor "${query}"`);
+  const handleVisibleStoriesChange = (ids: string[]) => {
+    setVisibleStoryIdsFromGlobe(ids);
   };
 
-  // Handle story selection
+  useEffect(() => {
+    let result = [...newsStories];
+    const categoryFilterActive = !!activeCategory;
+    const searchQueryActive = searchQuery.trim() !== "";
+
+    if (categoryFilterActive && searchQueryActive) {
+      const categoryStories = getStoriesByCategory(activeCategory);
+      const searchResults = getStoriesBySearch(searchQuery);
+      result = newsStories.filter(story =>
+        categoryStories.some(cs => cs.id === story.id) &&
+        searchResults.some(sr => sr.id === story.id)
+      );
+    } else if (categoryFilterActive) {
+      result = getStoriesByCategory(activeCategory);
+    } else if (searchQueryActive) {
+      result = getStoriesBySearch(searchQuery);
+    }
+    setStoriesForGlobe(result);
+  }, [activeCategory, searchQuery]);
+
+  useEffect(() => {
+    let filteredForDisplay = [...storiesForGlobe];
+
+    if (visibleStoryIdsFromGlobe !== null) {
+      if (visibleStoryIdsFromGlobe.length > 0) {
+        filteredForDisplay = filteredForDisplay.filter(story => 
+          visibleStoryIdsFromGlobe.includes(story.id)
+        );
+      } else {
+        filteredForDisplay = [];
+      }
+    }
+
+    filteredForDisplay.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    setStories(filteredForDisplay.slice(0, 10));
+
+    // Toast messages (can be adjusted based on the final count in 'stories')
+    // const finalStoryCount = filteredForDisplay.slice(0, 10).length;
+    // if (searchQuery.trim()) {
+    //   toast.info(`${finalStoryCount} resultaten gevonden voor "${searchQuery}" (zichtbaar op kaart)`);
+    // } else if (activeCategory) {
+    //   toast.info(`${finalStoryCount} verhalen in categorie "${activeCategory}" (zichtbaar op kaart)`);
+    // }
+  }, [storiesForGlobe, visibleStoryIdsFromGlobe, activeCategory, searchQuery]);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
   const handleStorySelect = (story: NewsStory) => {
     setSelectedStory(story);
     setFocusedCoordinates(story.coordinates);
     setHighlightedCountryId(getCountryISO(story.country));
   };
 
-  // Prevent body scrolling
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     document.documentElement.style.overflow = 'hidden';
@@ -68,7 +97,6 @@ const Index = () => {
 
   return (
     <div className="w-screen h-screen flex flex-col bg-background text-foreground overflow-hidden">
-      {/* Header with search and filters */}
       <header className="w-full py-6 px-4 flex-shrink-0">
         <div className="container mx-auto">
           <SearchBar onSearch={handleSearch} />
@@ -79,11 +107,8 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Main content: Globe and news feed */}
       <main className="flex-1 flex container mx-auto px-4 gap-8 pb-8 overflow-hidden">
-        {/* Left side: Globe Area */}
         <div className="flex-1 flex items-center justify-center relative min-h-0">
-          {/* Globe Component - Centered */}
           <Globe
             width={800}
             height={800}
@@ -93,13 +118,14 @@ const Index = () => {
                 handleStorySelect(story);
               }
             }}
-            stories={stories}
+            stories={storiesForGlobe}
+            renderableStoryIds={stories.map(s => s.id)}
             focusedCoordinates={focusedCoordinates}
             highlightedCountryId={highlightedCountryId}
+            onVisibleStoriesChange={handleVisibleStoriesChange}
           />
         </div>
 
-        {/* Right side: News feed */}
         <div className="lg:w-96 w-full flex-shrink-0">
           <div className="bg-card rounded-lg shadow-lg p-4 h-full flex flex-col">
             <h2 className="text-lg font-semibold mb-4">
@@ -128,7 +154,6 @@ const Index = () => {
         </div>
       </main>
 
-      {/* Floating summary card - Positioned near bottom, shifted left */}
       {selectedStory && (
         <div
           className="fixed left-[40%] bottom-8 z-50 transform -translate-x-1/2 bg-card rounded-xl shadow-lg px-6 py-4 max-w-md w-[90vw] cursor-pointer border border-border animate-fade-in"

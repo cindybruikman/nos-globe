@@ -3,6 +3,8 @@ import * as d3 from "d3";
 
 import wereld from "@/assets/data/world.json";
 import { NewsStory } from "@/utils/mockData";
+import { getCountryColor } from "@/utils/countryColors";
+import { getCountryISO } from "@/utils/countryMapping";
 
 const sensitivity = 50;
 
@@ -28,6 +30,8 @@ interface TheWorldProps {
   stories: NewsStory[];
   focusedCoordinates: [number, number] | null;
   highlightedCountryId: string | null;
+  onVisibleStoriesChange: (visibleIds: string[]) => void;
+  renderableStoryIds?: string[];
 }
 
 export const TheWorld: React.FC<TheWorldProps> = ({
@@ -37,6 +41,8 @@ export const TheWorld: React.FC<TheWorldProps> = ({
   stories,
   focusedCoordinates,
   highlightedCountryId,
+  onVisibleStoriesChange,
+  renderableStoryIds,
 }) => {
   const [allSvgPaths, setAllSvgPaths] = useState<JSX.Element[]>([]);
   const [allPointPaths, setAllPointPaths] = useState<JSX.Element[]>([]);
@@ -44,15 +50,14 @@ export const TheWorld: React.FC<TheWorldProps> = ({
   const globeRef = useRef<SVGCircleElement | null>(null);
   const timerRef = useRef<boolean>(false);
 
-  // Refs for props that might go stale in D3 event handlers
   const storiesRef = useRef(stories);
   useEffect(() => { storiesRef.current = stories; }, [stories]);
 
-  const highlightedCountryIdRef = useRef(highlightedCountryId);
-  useEffect(() => { highlightedCountryIdRef.current = highlightedCountryId; }, [highlightedCountryId]);
-
   const openModalRef = useRef(openModal);
   useEffect(() => { openModalRef.current = openModal; }, [openModal]);
+  
+  const highlightedCountryIdRef = useRef(highlightedCountryId);
+  useEffect(() => { highlightedCountryIdRef.current = highlightedCountryId; }, [highlightedCountryId]);
 
   const projection = useRef(
     d3.geoOrthographic()
@@ -64,31 +69,78 @@ export const TheWorld: React.FC<TheWorldProps> = ({
 
   const initialScale = useRef(projection.scale()).current;
   const path = useRef(d3.geoPath().projection(projection)).current;
-  const pointPath = d3.geoPath().projection(projection).pointRadius(10);
 
-  const getCategoryIcon = useCallback((category: string) => {
+  const resolveCategoryIcon = useCallback((category: string) => {
     switch (category) {
-      case "politiek":
-        return "politiek-rood";
-      case "klimaat":
-        return "klimaat-blauw";
-      case "economie":
-        return "economie-geel";
-      case "cultuur":
-        return "cultuur-oranje";
-      case "techniek":
-      case "tech":
-        return "techniek-groen";
-      case "sport":
-        return "politiek-rood";
-      case "opmerkelijk":
-        return "cultuur-oranje";
-      case "rechtspraak":
-        return "default-rood";
-      default:
-        return "default-rood";
+      case "politiek": return "politiek-rood";
+      case "klimaat": return "klimaat-blauw";
+      case "economie": return "economie-geel";
+      case "cultuur": return "cultuur-oranje";
+      case "techniek": case "tech": return "techniek-groen";
+      case "sport": return "politiek-rood";
+      case "opmerkelijk": return "cultuur-oranje";
+      case "rechtspraak": return "default-rood";
+      default: return "default-rood";
     }
   }, []);
+
+  const [mapInteractionCounter, setMapInteractionCounter] = useState(0);
+  const incrementMapInteraction = () => setMapInteractionCounter(c => c + 1);
+
+  useEffect(() => {
+    const currentStoriesForGlobe = storiesRef.current;
+    const visibleIds: string[] = [];
+    if (currentStoriesForGlobe) {
+        currentStoriesForGlobe.forEach((story) => {
+            const coords = projection(story.coordinates);
+            if (coords && coords[0] >= 0 && coords[0] <= width && coords[1] >= 0 && coords[1] <= height) {
+                visibleIds.push(story.id);
+            }
+        });
+    }
+    onVisibleStoriesChange(visibleIds);
+  }, [storiesRef.current, width, height, projection, onVisibleStoriesChange, mapInteractionCounter]);
+
+  useEffect(() => {
+    const elements: JSX.Element[] = [];
+    const currentStoriesForGlobe = storiesRef.current;
+    const defaultDotColor = "#808080";
+
+    if (currentStoriesForGlobe && renderableStoryIds) {
+        currentStoriesForGlobe.forEach((story) => {
+            if (renderableStoryIds.includes(story.id)) {
+                const coords = projection(story.coordinates);
+                if (coords && coords[0] >= 0 && coords[0] <= width && coords[1] >= 0 && coords[1] <= height) {
+                    
+                    const countryISO = getCountryISO(story.country);
+                    const dotColor = countryISO ? getCountryColor(countryISO) : defaultDotColor;
+                    
+                    elements.push(
+                        <circle
+                            key={story.id}
+                            cx={coords[0]}
+                            cy={coords[1]}
+                            r={7}
+                            fill={dotColor}
+                            className="cursor-pointer story-dot"
+                            tabIndex={0}
+                            aria-label={story.title}
+                            onClick={() =>
+                                openModalRef.current({
+                                    prismic: story.id,
+                                    color: story.category,
+                                    type: story.title,
+                                    icon: resolveCategoryIcon(story.category),
+                                })
+                            }
+                        />
+                    );
+                }
+            }
+        });
+    }
+    setAllPointPaths(elements);
+  }, [renderableStoryIds, storiesRef.current, width, height, projection, resolveCategoryIcon, openModalRef, mapInteractionCounter]);
 
   const calcCountryPaths = useCallback(() => {
     const currentHighlightedCountryId = highlightedCountryIdRef.current;
@@ -96,57 +148,29 @@ export const TheWorld: React.FC<TheWorldProps> = ({
       <path
         key={country.id}
         d={path(country) || undefined}
-        fill={
-          currentHighlightedCountryId === country.id ? "#FFD700" : "#949494"
+        fill={ 
+          currentHighlightedCountryId === country.id 
+            ? getCountryColor(currentHighlightedCountryId)
+            : "#949494" 
         }
         stroke="white"
         strokeWidth={0.3}
       />
     ));
     setAllSvgPaths(paths);
-  }, [path]);
-
-  const calcPointPaths = useCallback(() => {
-    const currentStories = storiesRef.current;
-    const currentOpenModal = openModalRef.current;
-
-    const points = currentStories.map((story) => {
-      const coords = projection(story.coordinates);
-      if (coords) {
-        return (
-          <use
-            tabIndex={0}
-            aria-label={story.title}
-            key={story.id}
-            className="cursor-pointer"
-            xlinkHref={`#${getCategoryIcon(story.category)}`}
-            x={coords[0] * 3}
-            y={coords[1] * 3}
-            transform="scale(0.33)"
-            onClick={() =>
-              currentOpenModal({
-                prismic: story.id,
-                color: story.category,
-                type: story.title,
-                icon: getCategoryIcon(story.category),
-              })
-            }
-          />
-        );
-      }
-      return null;
-    });
-    setAllPointPaths(points.filter((p): p is JSX.Element => p !== null));
-  }, [getCategoryIcon, projection]);
+  }, [path, highlightedCountryIdRef]);
 
   const setRotationTimer = () => {
-    let rotationTimer = d3.timer((elapsed) => {
+    let rotationTimer = d3.timer(() => {
+      if (timerRef.current) {
+        rotationTimer.stop();
+        return;
+      }
       const rotate = projection.rotate();
       const k = sensitivity / projection.scale();
       projection.rotate([rotate[0] - 1 * k * -1, rotate[1]]);
       calcCountryPaths();
-      calcPointPaths();
-      if (timerRef.current) rotationTimer.stop();
+      incrementMapInteraction();
     }, 200);
   };
 
@@ -154,24 +178,25 @@ export const TheWorld: React.FC<TheWorldProps> = ({
     const svg = d3.select(svgRef.current);
     const globe = d3.select(globeRef.current);
 
-    svg
-      .call(
-        d3.drag<SVGSVGElement, unknown>().on("drag", (e) => {
-          timerRef.current = true;
-          const rotate = projection.rotate();
-          const k = sensitivity / projection.scale();
-          projection.rotate([rotate[0] + e.dx * k, rotate[1] - e.dy * k]);
-          calcCountryPaths();
-          calcPointPaths();
-        })
+    svg.call(
+        d3.drag<SVGSVGElement, unknown>()
+          .on("start", () => { timerRef.current = true; svg.interrupt("zoom"); })
+          .on("drag", (e) => {
+            const rotate = projection.rotate();
+            const k = sensitivity / projection.scale();
+            projection.rotate([rotate[0] + e.dx * k, rotate[1] - e.dy * k]);
+            calcCountryPaths();
+            incrementMapInteraction();
+          })
+          .on("end", () => { /* No auto-restart */ })
       )
       .call(
         d3.zoom<SVGSVGElement, unknown>().on("zoom", (e) => {
           if (e.transform.k > 0.3) {
             projection.scale(initialScale * e.transform.k);
-            calcCountryPaths();
-            calcPointPaths();
             globe.attr("r", projection.scale());
+            calcCountryPaths();
+            incrementMapInteraction();
           } else {
             e.transform.k = 0.3;
           }
@@ -181,11 +206,9 @@ export const TheWorld: React.FC<TheWorldProps> = ({
 
   useEffect(() => {
     if (focusedCoordinates) {
-      const targetRotation: [number, number] = [
-        -focusedCoordinates[0],
-        -focusedCoordinates[1],
-      ];
-      const targetScale = initialScale * 3;
+      const targetRotation: [number, number] = [-focusedCoordinates[0], -focusedCoordinates[1]];
+      const targetScale = initialScale * 8;
+      timerRef.current = true;
 
       d3.select(svgRef.current)
         .transition()
@@ -196,31 +219,23 @@ export const TheWorld: React.FC<TheWorldProps> = ({
           return (t) => {
             projection.rotate(r(t));
             projection.scale(s(t));
-            calcCountryPaths();
-            calcPointPaths();
             d3.select(globeRef.current).attr("r", projection.scale());
+            calcCountryPaths();
+            incrementMapInteraction();
           };
+        })
+        .on("end", () => {
+            incrementMapInteraction();
         });
-      timerRef.current = true;
-    } else {
-      // Optional: Reset view if no coordinates are focused
-      // Or start auto-rotation again if desired
-      // timerRef.current = false;
-      // setRotationTimer();
     }
-  }, [focusedCoordinates]);
+  }, [focusedCoordinates, projection, initialScale, calcCountryPaths]);
 
   useEffect(() => {
-    calcPointPaths();
     calcCountryPaths();
     drawGlobe();
     setRotationTimer();
-  }, [height, width]);
-
-  // Add effect to update points when stories change
-  useEffect(() => {
-    calcPointPaths();
-  }, [stories]);
+    incrementMapInteraction();
+  }, [width, height]);
 
   return (
     <svg
