@@ -11,7 +11,7 @@ export interface NewsStory {
   locations: StoryLocation[]; // Replaces country and coordinates
   region: string; // This might be derived or represent a broader area
   imageUrl: string;
-  summary: string;
+  summary?: string;
   fullText?: string; // Optional full article text
   date: string;
 }
