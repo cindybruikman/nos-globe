@@ -162,7 +162,7 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="flex-1 flex w-full px-12 py-8 overflow-hidden gap-4">
+      <main className="flex-1 flex w-full px-12 pb-8 overflow-hidden gap-4">
         {/* Timeline Selector on the left (with proper margins) */}
         <div className="w-52 flex-shrink-0 h-[calc(100%-50px)] self-center">
           <TimelineSelector 
