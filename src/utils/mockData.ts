@@ -303,7 +303,7 @@ export const newsStories: NewsStory[] = [
     category: "tech",
     locations: [{ country: "Canada", coordinates: [-75.69, 45.42] }],
     region: "North America",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary:
       "Canada stelt nieuwe regelgeving voor rondom het gebruik van AI, wat leidt tot bezorgdheid bij technologiebedrijven over innovatiebeperkingen.",
     date: "2023-04-29",
@@ -314,7 +314,7 @@ export const newsStories: NewsStory[] = [
     category: "cultuur",
     locations: [{ country: "Brazil", coordinates: [-43.17, -22.91] }],
     region: "South America",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary:
       "Op Internationale Dansdag kwamen artiesten wereldwijd samen om via dans culturele expressie en verbondenheid te vieren.",
     date: "2023-04-28",
@@ -326,7 +326,7 @@ export const newsStories: NewsStory[] = [
     category: "tech",
     locations: [{ country: "China", coordinates: [116.4, 39.9] }],
     region: "Asia",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary:
       "Een Chinees technologiebedrijf heeft een wereldwijd satellietnetwerk gelanceerd om internettoegang in afgelegen gebieden te verbeteren.",
     date: "2023-04-27",
@@ -337,7 +337,7 @@ export const newsStories: NewsStory[] = [
     category: "klimaat",
     locations: [{ country: "Nepal", coordinates: [85.32, 27.71] }],
     region: "Asia",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary:
       "Tijdens een VN-conferentie in Kathmandu werden zorgen geuit over de versnelde smelting van gletsjers en de gevolgen voor miljoenen mensen in de regio.",
     date: "2023-04-18",
@@ -348,7 +348,7 @@ export const newsStories: NewsStory[] = [
     category: "economie",
     locations: [{ country: "Belgium", coordinates: [4.35, 50.85] }],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary:
       "De Belgische regering voert een nieuwe belasting in op grote techbedrijven die digitale diensten aanbieden binnen het land.",
     date: "2023-04-17",
@@ -360,7 +360,7 @@ export const newsStories: NewsStory[] = [
     category: "tech",
     locations: [{ country: "Ireland", coordinates: [-6.26, 53.35] }],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary:
       "Een Iers onderzoekscentrum heeft een AI ontwikkeld die poëzie kan genereren in meerdere Ierse dialecten, wat gezien wordt als een stap richting cultuurbehoud.",
     date: "2023-04-16",
@@ -371,7 +371,7 @@ export const newsStories: NewsStory[] = [
     category: "sport",
     locations: [{ country: "Afghanistan", coordinates: [69.17, 34.53] }],
     region: "Asia",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary:
       "Een Afghaans vrouwenteam is internationaal onderscheiden voor hun doorzettingsvermogen en prestaties in de sportwereld ondanks moeilijke omstandigheden.",
     date: "2023-04-15",
@@ -382,7 +382,7 @@ export const newsStories: NewsStory[] = [
     category: "klimaat",
     locations: [{ country: "South Sudan", coordinates: [31.58, 4.85] }],
     region: "Africa",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary:
       "Zuid-Soedan start met het planten van miljoenen bomen in een poging om landdegradatie en droogte tegen te gaan.",
     date: "2023-04-14",
@@ -393,7 +393,7 @@ export const newsStories: NewsStory[] = [
     category: "tech",
     locations: [{ country: "Estonia", coordinates: [24.75, 59.44] }],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary:
       "Estland loopt voorop in digitalisering en heeft nu het volledige gezondheidszorgsysteem gedigitaliseerd, inclusief patiëntendossiers.",
     date: "2023-03-09",
@@ -404,7 +404,7 @@ export const newsStories: NewsStory[] = [
     category: "politiek",
     locations: [{ country: "Venezuela", coordinates: [-66.9, 10.49] }],
     region: "South America",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary:
       "Mensenrechtenorganisaties luiden de noodklok over de mensonterende omstandigheden in Venezolaanse gevangenissen.",
     date: "2023-04-12",
@@ -415,7 +415,7 @@ export const newsStories: NewsStory[] = [
     category: "cultuur",
     locations: [{ country: "Bolivia", coordinates: [-68.12, -16.5] }],
     region: "South America",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary:
       "Een Boliviaans museum gebruikt VR-technologie om bezoekers onder te dompelen in uitgestorven talen en culturen van de Andes.",
     date: "2023-04-11",
@@ -426,7 +426,7 @@ export const newsStories: NewsStory[] = [
     category: "tech",
     locations: [{ country: "Malaysia", coordinates: [101.69, 3.14] }],
     region: "Asia",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary:
       "Wetenschappers in Maleisië testen een nieuw vaccin tegen dengue, een virus dat jaarlijks miljoenen treft in tropische gebieden.",
     date: "2023-04-10",
@@ -437,7 +437,7 @@ export const newsStories: NewsStory[] = [
     category: "politiek",
     locations: [{ country: "Switzerland", coordinates: [8.54, 47.37] }],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary:
       "Zwitserland houdt een nationaal referendum over de regulering van kunstmatige intelligentie, waarbij privacy en transparantie centraal staan.",
     date: "2023-04-09",
@@ -452,7 +452,7 @@ export const newsStories: NewsStory[] = [
       { country: "Lithuania", coordinates: [23.8813, 55.1694] }
     ],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary: "De NAVO overweegt extra troepen te stationeren in de Baltische staten vanwege toenemende dreiging vanuit Rusland.",
     date: "2023-05-10"
   },
@@ -465,7 +465,7 @@ export const newsStories: NewsStory[] = [
       { country: "India", coordinates: [78.9629, 20.5937] }
     ],
     region: "Asia",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary: "Voor het eerst in jaren werken China en India samen aan patrouilles in het omstreden grensgebied in de Himalaya.",
     date: "2023-05-10"
   },
@@ -479,7 +479,7 @@ export const newsStories: NewsStory[] = [
       { country: "Ukraine", coordinates: [31.1656, 48.3794] }
     ],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary: "Leiders van Frankrijk, Duitsland en Oekraïne spreken over versnelde levering van luchtafweersystemen en tanks.",
     date: "2023-05-10"
   },
@@ -492,7 +492,7 @@ export const newsStories: NewsStory[] = [
       { country: "Japan", coordinates: [138.2529, 36.2048] }
     ],
     region: "Asia-Pacific",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary: "De Verenigde Staten en Japan hebben hun militaire samenwerking versterkt te midden van de spanningen rond Taiwan.",
     date: "2023-05-10"
   },
@@ -506,7 +506,7 @@ export const newsStories: NewsStory[] = [
       { country: "Canada", coordinates: [-106.3468, 56.1304] }
     ],
     region: "Global",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary: "Tijdens de G7-top wordt gesproken over nieuwe economische sancties tegen Iran en Venezuela vanwege mensenrechtenschendingen.",
     date: "2023-05-10"
   },
@@ -519,7 +519,7 @@ export const newsStories: NewsStory[] = [
       { country: "Sweden", coordinates: [18.6435, 60.1282] }
     ],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary: "De Turkse regering stelt dat Zweden nog niet genoeg stappen heeft gezet tegen Koerdische groeperingen.",
     date: "2023-05-10"
   },
@@ -533,7 +533,7 @@ export const newsStories: NewsStory[] = [
       { country: "Libya", coordinates: [17.2283, 26.3351] }
     ],
     region: "Mediterranean",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary: "Nieuwe bootvluchtelingen uit Noord-Afrika zetten de opvangcapaciteit van Zuid-Europa opnieuw onder druk.",
     date: "2023-05-10"
   },
@@ -546,7 +546,7 @@ export const newsStories: NewsStory[] = [
       { country: "Kosovo", coordinates: [20.9020, 42.6026] }
     ],
     region: "Europe",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary: "Nieuwe confrontaties tussen Servische en Kosovaarse troepen zorgen voor zorgen bij de EU over regionale stabiliteit.",
     date: "2023-05-10"
   },
@@ -559,7 +559,7 @@ export const newsStories: NewsStory[] = [
       { country: "Finland", coordinates: [25.7482, 61.9241] }
     ],
     region: "Arctic",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary: "Beide landen werken aan een nieuwe spoorlijn en energieverbinding in het hoge noorden om strategisch voordeel te vergroten.",
     date: "2023-05-10"
   },
@@ -573,7 +573,7 @@ export const newsStories: NewsStory[] = [
       { country: "United States", coordinates: [-95.7129, 37.0902] }
     ],
     region: "Middle East",
-    imageUrl: "/placeholder.svg",
+    imageUrl: "https://cdn.nos.nl/image/2025/04/25/1218230/1920x1080a.jpg",
     summary: "Na geheime gesprekken in Washington lijkt een historische diplomatieke doorbraak tussen Israël en Saoedi-Arabië nabij.",
     date: "2023-05-10"
   }
