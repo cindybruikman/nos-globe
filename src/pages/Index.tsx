@@ -56,6 +56,10 @@ const Index = () => {
     setVisibleStoryIdsFromGlobe(ids);
   };
 
+  const handleDateRangeChange = (range: [string, string]) => {
+    setDateRange(range);
+  };
+
   const handleClosePreview = () => {
     setSelectedStory(null);
     setFocusedCoordinates(null);
@@ -169,7 +173,7 @@ const Index = () => {
         </div>
 
         {/* Globe in the center with more space and wider canvas */}
-        <div className="flex-1 flex items-center justify-center relative min-h-0 overflow-hidden">
+        <div className="flex-1 flex items-center justify-center relative min-h-0 h-auto overflow-hidden">
           <Globe
             width={1200}
             height={900}
@@ -188,8 +192,8 @@ const Index = () => {
         </div>
 
         {/* News sidebar on the right (with proper margins) */}
-        <div className="w-72 flex-shrink-0 h-[calc(100%-50px)] self-center">
-          <div className="bg-card rounded-xl shadow-lg p-5 h-full flex flex-col">
+        <div className="w-96 flex-shrink-0 h-[calc(100%-50px)] self-center">
+          <div className="bg-card rounded-xl shadow-lg p-50 h-full flex flex-col">
             <h2 className="text-lg font-semibold mb-1">
               {searchQuery
                 ? `Zoekresultaten voor "${searchQuery}"`

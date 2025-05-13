@@ -187,7 +187,7 @@ export const TheWorld: React.FC<TheWorldProps> = ({
   const setRotationTimer = () => {
     let rotationTimer = d3.timer(() => {
       if (timerRef.current) {
-        rotationTimer.stop();
+        // rotationTimer.stop();
         return;
       }
       const rotate = projection.rotate();
