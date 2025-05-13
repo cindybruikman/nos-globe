@@ -65,6 +65,7 @@ export const TheWorld: React.FC<TheWorldProps> = ({
       .center([0, 0])
       .rotate([0, -15])
       .translate([width / 2, height / 2])
+      .clipAngle(90)
   ).current;
 
   const initialScale = useRef(projection.scale()).current; // Depends on projection
@@ -147,23 +148,36 @@ export const TheWorld: React.FC<TheWorldProps> = ({
     const currentStoriesForGlobe = storiesRef.current;
     const defaultDotColor = "#808080";
 
+    // Create pointPathGenerator here, it will use the current state of 'projection' (rotated/scaled)
+    const pointPathGenerator = d3.geoPath().projection(projection).pointRadius(7);
+
     if (currentStoriesForGlobe && renderableStoryIds) {
         currentStoriesForGlobe.forEach((story) => {
             if (renderableStoryIds.includes(story.id) && story.locations) {
                 story.locations.forEach((location, index) => {
-                    const coords = projection(location.coordinates);
-                    if (coords && coords[0] >= 0 && coords[0] <= width && coords[1] >= 0 && coords[1] <= height) {
+                    // Create a GeoJSON point feature for each location
+                    const pointGeoJsonFeature = {
+                        type: "Feature",
+                        geometry: {
+                            type: "Point",
+                            coordinates: location.coordinates as [number, number]
+                        },
+                        properties: {} // Can be empty or include other details if needed by pointPath
+                    };
+
+                    // pointPathGenerator returns a path 'd' attribute string, or null if not visible
+                    const dAttribute = pointPathGenerator(pointGeoJsonFeature as any);
+
+                    if (dAttribute) { 
                         const countryISO = getCountryISO(location.country);
                         const dotColor = countryISO ? getCountryColor(countryISO) : defaultDotColor;
                         
                         elements.push(
-                            <circle
+                            <path
                                 key={`${story.id}-${index}`}
-                                cx={coords[0]}
-                                cy={coords[1]}
-                                r={7}
+                                d={dAttribute}
                                 fill={dotColor}
-                                className="cursor-pointer story-dot"
+                                className="cursor-pointer story-dot" // Keep existing class if styles apply
                                 tabIndex={0}
                                 aria-label={`${story.title} (${location.country})`}
                                 onClick={() =>
@@ -182,7 +196,19 @@ export const TheWorld: React.FC<TheWorldProps> = ({
         });
     }
     setAllPointPaths(elements);
-  }, [renderableStoryIds, storiesRef.current, width, height, projection, resolveCategoryIcon, openModalRef, mapInteractionCounter, getCountryISO, getCountryColor]);
+  }, [
+    renderableStoryIds, 
+    stories, 
+    width, 
+    height, 
+    mapInteractionCounter, 
+    currentGlobeRadius,
+    projection, // Add projection here because pointPathGenerator depends on its current state
+    openModalRef, 
+    resolveCategoryIcon, 
+    getCountryISO, 
+    getCountryColor
+  ]);
 
   const setRotationTimer = () => {
     let rotationTimer = d3.timer(() => {
@@ -324,13 +350,6 @@ export const TheWorld: React.FC<TheWorldProps> = ({
             <circle cx="50" cy="50" r="50" fill="#e61e14" />
           <text x="50" y="55" textAnchor="middle" fill="white" fontSize="24">?</text>
         </g>
-        <clipPath id="globeClipPath">
-          <circle
-            cx={width / 2}
-            cy={height / 2}
-            r={currentGlobeRadius}
-          />
-        </clipPath>
       </defs>
       
       <circle
@@ -343,8 +362,8 @@ export const TheWorld: React.FC<TheWorldProps> = ({
         cy={height / 2}
         r={initialScale}
       ></circle>
-      <g className="countries" clipPath="url(#globeClipPath)">{allSvgPaths}</g>
-      <g clipPath="url(#globeClipPath)">{allPointPaths}</g>
+      <g className="countries">{allSvgPaths}</g>
+      <g>{allPointPaths}</g>
     </svg>
   );
 };
