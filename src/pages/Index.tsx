@@ -11,20 +11,24 @@ import CategoryFilters from "@/components/CategoryFilters";
 import NewsCard from "@/components/NewsCard";
 import { toast } from "sonner";
 import { getCountryISO } from "@/utils/countryMapping";
+import NOSLogo from "@/components/NOSLogo";
 
 const Index = () => {
   const [stories, setStories] = useState<NewsStory[]>([]);
-  const [storiesForGlobe, setStoriesForGlobe] = useState<NewsStory[]>(newsStories);
+  const [storiesForGlobe, setStoriesForGlobe] =
+    useState<NewsStory[]>(newsStories);
   const [selectedStory, setSelectedStory] = useState<NewsStory | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [visibleStoryIdsFromGlobe, setVisibleStoryIdsFromGlobe] = useState<string[] | null>(null);
+  const [visibleStoryIdsFromGlobe, setVisibleStoryIdsFromGlobe] = useState<
+    string[] | null
+  >(null);
   const [focusedCoordinates, setFocusedCoordinates] = useState<
     [number, number] | null
   >(null);
-  const [highlightedCountryIds, setHighlightedCountryIds] = useState<string[] | null>(
-    null
-  );
+  const [highlightedCountryIds, setHighlightedCountryIds] = useState<
+    string[] | null
+  >(null);
 
   const handleVisibleStoriesChange = (ids: string[]) => {
     setVisibleStoryIdsFromGlobe(ids);
@@ -38,9 +42,10 @@ const Index = () => {
     if (categoryFilterActive && searchQueryActive) {
       const categoryStories = getStoriesByCategory(activeCategory);
       const searchResults = getStoriesBySearch(searchQuery);
-      result = newsStories.filter(story =>
-        categoryStories.some(cs => cs.id === story.id) &&
-        searchResults.some(sr => sr.id === story.id)
+      result = newsStories.filter(
+        (story) =>
+          categoryStories.some((cs) => cs.id === story.id) &&
+          searchResults.some((sr) => sr.id === story.id)
       );
     } else if (categoryFilterActive) {
       result = getStoriesByCategory(activeCategory);
@@ -55,7 +60,7 @@ const Index = () => {
 
     if (visibleStoryIdsFromGlobe !== null) {
       if (visibleStoryIdsFromGlobe.length > 0) {
-        filteredForDisplay = filteredForDisplay.filter(story => 
+        filteredForDisplay = filteredForDisplay.filter((story) =>
           visibleStoryIdsFromGlobe.includes(story.id)
         );
       } else {
@@ -63,7 +68,9 @@ const Index = () => {
       }
     }
 
-    filteredForDisplay.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    filteredForDisplay.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
 
     setStories(filteredForDisplay.slice(0, 10));
 
@@ -84,7 +91,9 @@ const Index = () => {
     setSelectedStory(story);
     if (story.locations && story.locations.length > 0) {
       setFocusedCoordinates(story.locations[0].coordinates);
-      const countryIsos = story.locations.map(loc => getCountryISO(loc.country));
+      const countryIsos = story.locations.map((loc) =>
+        getCountryISO(loc.country)
+      );
       setHighlightedCountryIds(countryIsos);
     } else {
       setFocusedCoordinates(null);
@@ -93,11 +102,11 @@ const Index = () => {
   };
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
     };
   }, []);
 
@@ -105,7 +114,11 @@ const Index = () => {
     <div className="w-screen h-screen flex flex-col bg-background text-foreground overflow-hidden">
       <header className="w-full py-6 px-4 flex-shrink-0">
         <div className="container mx-auto">
-          <SearchBar onSearch={handleSearch} />
+          <div className="flex items-center justify-between gap-4 mb-4">
+            <NOSLogo />
+            <SearchBar onSearch={handleSearch} />
+          </div>
+
           <CategoryFilters
             activeCategory={activeCategory}
             setActiveCategory={setActiveCategory}
@@ -119,13 +132,13 @@ const Index = () => {
             width={800}
             height={800}
             openModal={(data) => {
-              const story = stories.find(s => s.id === data.prismic);
+              const story = stories.find((s) => s.id === data.prismic);
               if (story) {
                 handleStorySelect(story);
               }
             }}
             stories={storiesForGlobe}
-            renderableStoryIds={stories.map(s => s.id)}
+            renderableStoryIds={stories.map((s) => s.id)}
             focusedCoordinates={focusedCoordinates}
             highlightedCountryIds={highlightedCountryIds}
             onVisibleStoriesChange={handleVisibleStoriesChange}
@@ -138,7 +151,10 @@ const Index = () => {
               {searchQuery
                 ? `Zoekresultaten voor "${searchQuery}"`
                 : activeCategory
-                ? `${activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)} nieuws`
+                ? `${
+                    activeCategory.charAt(0).toUpperCase() +
+                    activeCategory.slice(1)
+                  } nieuws`
                 : "Wereldnieuws"}
             </h2>
             <div className="flex-1 space-y-4 overflow-y-auto pr-2 min-h-0">
@@ -163,18 +179,24 @@ const Index = () => {
       {selectedStory && (
         <div
           className="fixed left-[40%] bottom-8 z-50 transform -translate-x-1/2 bg-card rounded-xl shadow-lg px-6 py-4 max-w-md w-[90vw] cursor-pointer border border-border animate-fade-in"
-          style={{ minWidth: 320, maxWidth: 480, boxShadow: '0 4px 32px rgba(0,0,0,0.18)' }}
-          onClick={() => window.open(`/article/${selectedStory.id}`, '_blank')}
+          style={{
+            minWidth: 320,
+            maxWidth: 480,
+            boxShadow: "0 4px 32px rgba(0,0,0,0.18)",
+          }}
+          onClick={() => window.open(`/article/${selectedStory.id}`, "_blank")}
         >
           <h2 className="text-lg font-semibold mb-2">{selectedStory.title}</h2>
           <p className="text-sm text-muted-foreground mb-2">
-            {selectedStory.date} • 
-            {selectedStory.locations && selectedStory.locations.length > 0 
-              ? selectedStory.locations.map(loc => loc.country).join(', ') 
-              : 'Locatie onbekend'}
+            {selectedStory.date} •
+            {selectedStory.locations && selectedStory.locations.length > 0
+              ? selectedStory.locations.map((loc) => loc.country).join(", ")
+              : "Locatie onbekend"}
           </p>
           <p className="text-sm line-clamp-4">{selectedStory.summary}</p>
-          <div className="text-xs text-primary mt-2">Klik om het volledige artikel te openen</div>
+          <div className="text-xs text-primary mt-2">
+            Klik om het volledige artikel te openen
+          </div>
         </div>
       )}
     </div>
