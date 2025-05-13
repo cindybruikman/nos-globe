@@ -104,9 +104,9 @@ const Index = () => {
 
   return (
     <div className="w-screen h-screen flex flex-col bg-background text-foreground overflow-hidden">
-      <header className="w-full py-4 px-4 flex-shrink-0 border-b-[0.0625rem] border-[rgb(102,102,102)]">
+      <header className="w-full py-4 px-4 flex-shrink-0">
         <div className="container mx-auto">
-          <div className="flex items-center justify-between pb-4 gap-4 mb-4 w-full border-b-[0.0625rem] border-[rgb(102,102,102)]">
+          <div className="flex items-center justify-between pb-4 gap-4 mb-4 w-full">
             <NOSLogo />
             <SearchBar onSearch={handleSearch} />
           </div>
