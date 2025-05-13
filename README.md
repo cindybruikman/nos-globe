@@ -1,73 +1,102 @@
-# Welcome to your Lovable project
+# NOS Globe 🌍📰
 
-## Project info
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Hackathon](https://img.shields.io/badge/Fontys%20MindLabs-Hackathon-ff69b4?style=for-the-badge)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![D3.js](https://img.shields.io/badge/D3.js-F9A03C?style=for-the-badge&logo=d3.js&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 
-**URL**: https://lovable.dev/projects/0d67983b-79b1-46d9-9cf5-057c8929436a
+---
 
-## How can I edit this code?
+## Overview
 
-There are several ways of editing your application.
+**NOS Globe** is an interactive news experience built during the [Fontys Mindlabs Hackathon](https://www.mind-labs.eu/) in collaboration with **NOS**. The project visualizes global news events on a rotating 3D globe using D3.js and React.
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/0d67983b-79b1-46d9-9cf5-057c8929436a) and start prompting.
+## 🧠 Key Features
 
-Changes made via Lovable will be committed automatically to this repo.
+- 🌍 3D interactive globe powered by D3.js
+- 📰 Clickable icons with categorized news stories
+- 🧭 Filters for categories like politics, culture, climate, and more
+- 🔍 Search functionality with live filtering
+- 🌙 Clean dark mode design
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🎯 Purpose
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+The purpose of NOS Globe is to make world news more **visual**, **intuitive**, and **explorable**. It aims to provide users — especially younger audiences — with a playful yet informative way to engage with international journalism.
 
-Follow these steps:
+---
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## ⚙️ Technologies Used
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Application stack
+- React + TypeScript
+- Vite
+- Tailwind CSS
+- D3.js
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Tools
+- VSCode
+- Git + GitHub
+- Vercel (Deployment)
+- Node.js + npm
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### AI / Conceptual tools
+- ChatGPT (concept co-creation)
+- Lovable (UX prompt design)
+
+---
+
+## 🚀 Installation
+
+### Prerequisites
+
+- Node.js (LTS recommended)
+- npm
+
+### Steps
+
+```bash
+git clone https://github.com/cindybruikman/nos-globe.git
+cd nos-globe
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
+## ⚙️ Configuration
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+You can add environment variables (if needed) in a `.env.local` file. Modify Vite or Tailwind configs as required.
 
-## What technologies are used for this project?
+---
 
-This project is built with:
+## 📜 Scripts
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+| Command        | Description                  |
+|----------------|------------------------------|
+| `npm run dev`  | Start development server     |
+| `npm run build`| Build for production         |
+| `npm start`    | Start production server      |
+| `npm run lint` | Lint the codebase            |
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/0d67983b-79b1-46d9-9cf5-057c8929436a) and click on Share -> Publish.
+## 🤝 Contributing
 
-## Can I connect a custom domain to my Lovable project?
+Contributions are welcome! Feel free to fork the repo, submit issues, or send pull requests.
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 📄 License
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Licensed under the [MIT License](LICENSE).
+
+---
+
+🔗 GitHub repository: [cindybruikman/nos-globe](https://github.com/cindybruikman/nos-globe)
