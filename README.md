@@ -1,102 +1,81 @@
-# NOS Globe 🌍📰
+# NOS Globe
 
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
-![Hackathon](https://img.shields.io/badge/Fontys%20MindLabs-Hackathon-ff69b4?style=for-the-badge)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![D3.js](https://img.shields.io/badge/D3.js-F9A03C?style=for-the-badge&logo=d3.js&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=white)
+![D3.js](https://img.shields.io/badge/D3.js-F9A03C?style=for-the-badge&logo=d3.js&logoColor=black)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)
 
 ---
 
-## Overview
+## 🌍 Overview
 
-**NOS Globe** is an interactive news experience built during the [Fontys Mindlabs Hackathon](https://www.mind-labs.eu/) in collaboration with **NOS**. The project visualizes global news events on a rotating 3D globe using D3.js and React.
-
----
-
-## 🧠 Key Features
-
-- 🌍 3D interactive globe powered by D3.js
-- 📰 Clickable icons with categorized news stories
-- 🧭 Filters for categories like politics, culture, climate, and more
-- 🔍 Search functionality with live filtering
-- 🌙 Clean dark mode design
+**NOS Globe** is an interactive, globe-based news interface developed for the Fontys Mindlabs hackathon in collaboration with NOS. The app visualizes global news stories per region using data-driven markers and an immersive globe experience. Users can explore categorized articles, filter them by theme, and navigate easily across the world to see what’s happening where and why it matters.
 
 ---
 
-## 🎯 Purpose
+## 🖼️ Screenshot
 
-The purpose of NOS Globe is to make world news more **visual**, **intuitive**, and **explorable**. It aims to provide users — especially younger audiences — with a playful yet informative way to engage with international journalism.
-
----
-
-## ⚙️ Technologies Used
-
-### Application stack
-- React + TypeScript
-- Vite
-- Tailwind CSS
-- D3.js
-
-### Tools
-- VSCode
-- Git + GitHub
-- Vercel (Deployment)
-- Node.js + npm
-
-### AI / Conceptual tools
-- ChatGPT (concept co-creation)
-- Lovable (UX prompt design)
+![Screenshot of the app](public/image.png)
 
 ---
 
-## 🚀 Installation
+## 🔧 Setup Instructions
 
-### Prerequisites
-
-- Node.js (LTS recommended)
-- npm
-
-### Steps
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/cindybruikman/nos-globe.git
 cd nos-globe
+```
+
+### 2. Install Dependencies
+
+```bash
 npm install
+```
+
+### 3. Start the App
+
+```bash
 npm run dev
 ```
 
-Then open [http://localhost:3000](http://localhost:3000) in your browser.
+Visit: [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## ⚙️ Configuration
+## 🛠 Scripts
 
-You can add environment variables (if needed) in a `.env.local` file. Modify Vite or Tailwind configs as required.
-
----
-
-## 📜 Scripts
-
-| Command        | Description                  |
-|----------------|------------------------------|
-| `npm run dev`  | Start development server     |
-| `npm run build`| Build for production         |
-| `npm start`    | Start production server      |
-| `npm run lint` | Lint the codebase            |
+| Command         | Description              |
+| --------------- | ------------------------ |
+| npm run dev     | Run local dev server     |
+| npm run build   | Build for production     |
+| npm run lint    | Lint the code            |
+| npm run preview | Preview production build |
 
 ---
 
-## 🤝 Contributing
+## 💡 Key Features
 
-Contributions are welcome! Feel free to fork the repo, submit issues, or send pull requests.
+- Interactive D3-powered 3D globe with zoom and drag
+- News articles visualized as location-based pins
+- Filter by categories like politics, culture, sports, and more
+- Timeline component for temporal filtering
+- Accessible and responsive dark-mode UI
+
+---
+
+## 🎓 Hackathon Context
+
+This project was built during a two-day hackathon organized by Fontys Mindlabs and NOS. The challenge:  
+> "How can we present foreign news in an immersive, engaging way?"
+
+The result: a data-rich, intuitive news globe designed to make exploration rewarding.
 
 ---
 
 ## 📄 License
 
-Licensed under the [MIT License](LICENSE).
-
----
-
-🔗 GitHub repository: [cindybruikman/nos-globe](https://github.com/cindybruikman/nos-globe)
+MIT License
